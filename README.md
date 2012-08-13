@@ -1,7 +1,7 @@
 Mongoose Validator
 ==================
 
-Validators for [mongoose](http://mongoosejs.com) models utilising [node-validator](https://github.com/chriso/node-validator).
+Validators for [mongoose](http://mongoosejs.com) schemas utilising [node-validator](https://github.com/chriso/node-validator).
 
 Mongoose Validator simply returns Mongoose style validation objects that utilise node-validator for the data validation.
 
