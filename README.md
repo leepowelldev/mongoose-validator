@@ -1,7 +1,7 @@
 Mongoose Validator
 ==================
 
-Validators for [mongoose](http://mongoosejs.com) schemas utilising [node-validator](https://github.com/chriso/node-validator).
+Validators for [Mongoose](http://mongoosejs.com) schemas utilising [node-validator](https://github.com/chriso/node-validator).
 
 Mongoose Validator simply returns Mongoose style validation objects that utilise node-validator for the data validation.
 
@@ -62,6 +62,7 @@ If you wish to enable a callback when a validator fails, simply do:
 
 This is a generic callback that gets fired with any validation failure, currently there is no support for individual callbacks per validation type.
 
+NOTE: the error passed to the callback is that thrown by node-validator NOT by Mongoose. Mongoose returns it's own error object to to the 'save' callback.
 
 ##Verbose Mode##
 
