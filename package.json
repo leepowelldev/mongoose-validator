@@ -2,15 +2,18 @@
   "author": "Lee Powell <lee@leepowell.co.uk> (http://leepowell.co.uk)",
   "name": "mongoose-validator",
   "description": "Validators for mongoose models utilising node-validator",
+  "keywords": ["mongoose", "validate", "models"],
   "version": "0.1.1",
-  "homepage": "https://github.com/leepowellcouk/mongoose-validator",
+  "main": "./lib",
+  "homepage": "http://github.com/leepowellcouk/mongoose-validator",
   "repository": {
-    "url": "https://github.com/leepowellcouk/mongoose-validator.git"
+  	"type": "git",
+    "url": "git://github.com/leepowellcouk/mongoose-validator.git"
   },
   "dependencies": {
 	  "validator": "0.4.x"
   },
   "engines": {
-    "node": "*"
+    "node": ">=0.2.2"
   }
 }

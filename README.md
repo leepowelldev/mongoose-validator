@@ -5,6 +5,10 @@ Validators for [mongoose](http://mongoosejs.com) schemas utilising [node-validat
 
 Mongoose Validator simply returns Mongoose style validation objects that utilise node-validator for the data validation.
 
+##Installation##
+
+	npm install mongoose-validator
+
 ##Usage##
 
 	var mongoose = require('mongoose'),
