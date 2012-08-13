@@ -1,0 +1,18 @@
+{
+  "author": "Lee Powell <lee@leepowell.co.uk> (http://leepowell.co.uk)",
+  "name": "mongoose-validator",
+  "description": "Validators for mongoose models utilising node-validator",
+  "version": "0.1.1",
+  "homepage": "homepage",
+  "repository": {
+    "url": "gitrepo"
+  },
+  "dependencies": {
+	  "validator": "0.4.x"
+  },
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}
