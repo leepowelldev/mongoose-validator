@@ -3,15 +3,13 @@
   "name": "mongoose-validator",
   "description": "Validators for mongoose models utilising node-validator",
   "version": "0.1.1",
-  "homepage": "homepage",
+  "homepage": "https://github.com/leepowellcouk/mongoose-validator",
   "repository": {
-    "url": "gitrepo"
+    "url": "https://github.com/leepowellcouk/mongoose-validator.git"
   },
   "dependencies": {
 	  "validator": "0.4.x"
   },
-  "devDependencies": {},
-  "optionalDependencies": {},
   "engines": {
     "node": "*"
   }
