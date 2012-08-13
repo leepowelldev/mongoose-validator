@@ -12,7 +12,8 @@ Mongoose Validator simply returns Mongoose style validation objects that utilise
 ##Usage##
 
 	var mongoose = require('mongoose'),
-		validator = require('mongoose-validator');
+		mongooseValidator = require('mongoose-validator'),
+		validator = mongooseValidator.validator;
 	
 	var nameValidator = [validator.len(3, 50), validator.isAlphanumeric()];
 	
@@ -28,15 +29,34 @@ By default error messages are used from node-validator, however you can use your
 
 	validator.len(3, 50, 'Name should be between 3 and 50 characters in length')
 
+Alternatively you can overwrite any of the defaultError messages from node-validator for use in all calls to a particaular method.
+	
+	var mongoose = require('mongoose'),
+		mongooseValidator = require('mongoose-validator'),
+		validator = mongooseValidator.validator;
+	
+	// batch
+		
+	mongooseValidator.setDefaultError({
+		len: 'A new error message that will be used for all len calls',
+		isRegex: 'A new error message that will be used for all isRegex calls'
+	});
+	
+	// single
+	
+	mongooseValidator.setDefaultError('len', 'A new error message that will be used for all len calls');
+	
+
 ##Callback##
 If you wish to enable a callback when a validator fails, simply do:
 
 	var mongoose = require('mongoose'),
-		validator = require('mongoose-validator');
+		mongooseValidator = require('mongoose-validator'),
+		validator = mongooseValidator.validator;
 	
-	validator.callback = function(err){
+	mongooseValidator.setCallback(function(err){
 		// do something with the error
-	};
+	});
 	
 	...
 
@@ -48,8 +68,9 @@ This is a generic callback that gets fired with any validation failure, currentl
 By default there is no verbose logging of errors thrown by node-validator, to enable this simply do:
 
 	var mongoose = require('mongoose'),
-		validator = require('mongoose-validator');
+		mongooseValidator = require('mongoose-validator'),
+		validator = mongooseValidator.validator;
 	
-	validator.verbose = true;
+	mongooseValidator.setVerbose(true);
 	
 	...
