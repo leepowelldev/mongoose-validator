@@ -3,7 +3,7 @@
   "name": "mongoose-validator",
   "description": "Validators for mongoose models utilising node-validator",
   "keywords": ["mongoose", "validate", "models"],
-  "version": "0.1.2",
+  "version": "0.1.3",
   "main": "./lib",
   "homepage": "http://github.com/leepowellcouk/mongoose-validator",
   "repository": {
