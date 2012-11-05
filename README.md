@@ -45,3 +45,7 @@ Alternatively you can overwrite any of the defaultError messages from node-valid
 	// single
 	
 	mongooseValidator.setDefaultErrorMessage('len', 'A new error message that will be used for all len calls');
+	
+
+## Change Notes ##
+0.1.4 - Updated to fix isEmpty method returning incorrectly, thanks to [tjmehta](https://github.com/tjmehta) for this.
