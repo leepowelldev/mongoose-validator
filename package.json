@@ -1,19 +1,28 @@
 {
-  "author": "Lee Powell <lee@leepowell.co.uk> (http://leepowell.co.uk)",
-  "name": "mongoose-validator",
-  "description": "Validators for mongoose models utilising node-validator",
-  "keywords": ["mongoose", "validate", "models"],
-  "version": "0.1.4",
-  "main": "./lib",
-  "homepage": "http://github.com/leepowellcouk/mongoose-validator",
-  "repository": {
-  	"type": "git",
-    "url": "git://github.com/leepowellcouk/mongoose-validator.git"
-  },
-  "dependencies": {
-	  "validator": "0.4.x"
-  },
-  "engines": {
-    "node": ">=0.2.2"
-  }
+    "author": "Lee Powell <lee@leepowell.co.uk> (http://leepowell.co.uk)",
+    "name": "mongoose-validator",
+    "description": "Validators for mongoose models utilising node-validator",
+    "keywords": ["mongoose", "validate", "models"],
+    "version": "0.2.0",
+    "contributors": [
+        {
+            "name": "Francesco Pasqua",
+            "web": "https://github.com/cesconix/"
+        }
+    ],
+    "main": "./lib",
+    "homepage": "http://github.com/leepowellcouk/mongoose-validator",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/leepowellcouk/mongoose-validator.git"
+    },
+    "dependencies": {
+        "validator": "0.4.x"
+    },
+    "engines": {
+        "node": ">=0.2.2"
+    },
+    "devDependencies": {
+        "mongoose": "3.0.x"
+    }
 }
