@@ -54,9 +54,11 @@ Custom validators are called normally:
 
 Arguments can be passed like so:
 
-    require('mongoose-validator').extend('sameType', function (type) {
+    require('mongoose-validator').extend('isType', function (type) {
 	    return type === typeof this.str;
-    }, 'Not same type');
+    }, 'Not correct type');
+    
+    validate('isType', 'string');
 
 NOTE: As per `node-validator` documentation, the currently tested value is accessed through `this.str`.
 	
