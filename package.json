@@ -1,28 +1,40 @@
 {
-    "author": "Lee Powell <lee@leepowell.co.uk> (http://leepowell.co.uk)",
-    "name": "mongoose-validator",
-    "description": "Validators for mongoose models utilising node-validator",
-    "keywords": ["mongoose", "validate", "models"],
-    "version": "0.2.0",
-    "contributors": [
-        {
-            "name": "Francesco Pasqua",
-            "web": "https://github.com/cesconix/"
-        }
-    ],
-    "main": "./lib",
-    "homepage": "http://github.com/leepowellcouk/mongoose-validator",
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/leepowellcouk/mongoose-validator.git"
-    },
-    "dependencies": {
-        "validator": "0.4.x"
-    },
-    "engines": {
-        "node": ">=0.2.2"
-    },
-    "devDependencies": {
-        "mongoose": "3.0.x"
+  "author": {
+    "name": "Lee Powell",
+    "email": "lee@leepowell.co.uk",
+    "url": "http://leepowell.co.uk"
+  },
+  "name": "mongoose-validator",
+  "description": "Validators for mongoose models utilising node-validator",
+  "keywords": [
+    "mongoose",
+    "validate",
+    "models"
+  ],
+  "version": "0.2.1",
+  "contributors": [
+    {
+      "name": "Francesco Pasqua",
+      "url": "https://github.com/cesconix/"
     }
+  ],
+  "main": "./lib/mongoose-validator",
+  "homepage": "http://github.com/leepowellcouk/mongoose-validator",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/leepowellcouk/mongoose-validator.git"
+  },
+  "dependencies": {
+    "validator": "0.4.x"
+  },
+  "engines": {
+    "node": ">=0.2.2"
+  },
+  "devDependencies": {
+    "mongoose": "3.0.x"
+  },
+  "readme": "Mongoose Validator\n==================\n\nValidators for [Mongoose](http://mongoosejs.com) schemas utilising [node-validator](https://github.com/chriso/node-validator).\n\nMongoose Validator simply returns Mongoose style validation objects that utilise node-validator for the data validation.\n\n##Installation##\n\n\tnpm install mongoose-validator\n\n##Usage##\n\n\tvar mongoose = require('mongoose'),\n\t\tvalidate = require('mongoose-validator').validate;\n\t\n\t// validate([method], [arg1], [arg2] ... );\n\t\n\tvar nameValidator = [validate('len', 3, 50), validate('isAlphanumeric')];\n\t\n\tvar Schema = new mongoose.Schema({\n\t\tname: {type: String, required: true, validate: nameValidator}\n\t});\n\nError objects are returned as normal via Mongoose.\n\n##Error Messages##\n\nCustom error messages have been removed from 0.2.0 and as such Mongoose Validator makes sole use of the error messages provided by node-validator.\n\t\n##Contributors##\n\nSpecial thanks to Francesco Pasqua for heavily refactoring the into something far more future proof.\n",
+  "readmeFilename": "README.md",
+  "_id": "mongoose-validator@0.2.0",
+  "_from": "mongoose-validator"
 }
