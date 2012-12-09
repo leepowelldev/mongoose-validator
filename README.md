@@ -42,8 +42,8 @@ Some of `node-validator` validators require a value to check against (isEmail, i
 
 As of `0.2.1` custom validators can be added:
 
-    require('mongoose-validator').extend('isBoolean', function (val) {
-	    return 'boolean' === typeof val;
+    require('mongoose-validator').extend('isBoolean', function () {
+	    return 'boolean' === typeof this.str;
     }, 'Not a boolean');
 
     require('mongoose-validator').extend([method name], [validator], [default error message]);
@@ -51,6 +51,14 @@ As of `0.2.1` custom validators can be added:
 Custom validators are called normally:
 
     validate({passIfEmpty: true}, 'isBoolean');
+
+Arguments can be passed like so:
+
+    require('mongoose-validator').extend('sameType', function (type) {
+	    return type === typeof this.str;
+    }, 'Not same type');
+
+NOTE: As per `node-validator` documentation, the currently tested value is accessed through `this.str`.
 	
 ##Contributors##
 
