@@ -64,4 +64,4 @@ NOTE: As per `node-validator` documentation, the currently tested value is acces
 	
 ##Contributors##
 
-Special thanks to Francesco Pasqua for heavily refactoring the into something far more future proof.
+Special thanks to Francesco Pasqua for heavily refactoring the code into something far more future proof.
