@@ -1,16 +1,20 @@
 {
   "name": "mongoose-validator",
   "description": "Validators for mongoose models utilising node-validator",
-  "version": "0.2.2",
+  "version": "1.0.0",
   "author": "Lee Powell <lee@leepowell.co.uk>",
   "contributors": [
     {
       "name": "Francesco Pasqua",
       "url": "https://github.com/cesconix/"
+    },
+    { 
+      "name" : "Igor Escobar",
+      "email" : "blog@igorescobar.com"
     }
   ],
   "dependencies": {
-    "validator": "~1.2.1"
+    "validator": "3.x"
   },
   "devDependencies": {
     "mongoose": "~3.6.11",

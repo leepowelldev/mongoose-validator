@@ -53,7 +53,7 @@ describe('Mongoose Validator', function() {
     });
 
     it('Should pass a validator', function(done) {
-        schema.path('name').validate(validate('len', 5, 10));
+        schema.path('name').validate(validate('isLength', 5, 10));
 
         should.exist(doc);
 
@@ -69,7 +69,7 @@ describe('Mongoose Validator', function() {
     });
 
     it('Should fail a validator', function(done) {
-        schema.path('name').validate(validate('len', 5, 10));
+        schema.path('name').validate(validate('isLength', 5, 10));
 
         should.exist(doc);
 
@@ -86,7 +86,7 @@ describe('Mongoose Validator', function() {
     });
 
     it('Should pass a passIfEmpty validator', function(done) {
-        schema.path('name').validate(validate({ passIfEmpty: true }, 'len', 5, 10));
+        schema.path('name').validate(validate({ passIfEmpty: true }, 'isLength', 5, 10));
 
         should.exist(doc);
 
@@ -101,7 +101,7 @@ describe('Mongoose Validator', function() {
     });
 
     it('Should fail a passIfEmpty validator', function(done) {
-        schema.path('name').validate(validate({ passIfEmpty: true }, 'len', 5, 10));
+        schema.path('name').validate(validate({ passIfEmpty: true }, 'isLength', 5, 10));
 
         should.exist(doc);
 
@@ -118,7 +118,7 @@ describe('Mongoose Validator', function() {
     });
 
     it('Should use custom error message', function(done) {
-        schema.path('name').validate(validate({ message: 'Custom error message' }, 'len', 5, 10));
+        schema.path('name').validate(validate({ message: 'Custom error message' }, 'isLength', 5, 10));
 
         should.exist(doc);
 
