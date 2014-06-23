@@ -16,7 +16,7 @@ Mongoose Validator simply returns Mongoose style validation objects that utilise
 	
 	// validate([method], [arg1], [arg2] ... );
 	
-	var nameValidator = [validate('len', 3, 50), validate('isAlphanumeric')];
+	var nameValidator = [validate('isLength', 3, 50), validate('isAlphanumeric')];
 	
 	var Schema = new mongoose.Schema({
 		name: {type: String, required: true, validate: nameValidator}
@@ -28,7 +28,7 @@ Error objects are returned as normal via Mongoose.
 
 Custom error messages are now back in `0.2.1` and can be set through the options object:
 
-    validate({message: "String should be between 3 and 50 characters"}, 'len', 3, 50)
+    validate({message: "String should be between 3 and 50 characters"}, 'isLength', 3, 50)
     
 ## Pass validation if empty ##
 
