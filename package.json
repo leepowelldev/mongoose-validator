@@ -1,7 +1,7 @@
 {
   "name": "mongoose-validator",
   "description": "Validators for mongoose models utilising node-validator",
-  "version": "0.2.2",
+  "version": "0.3.0_alpha",
   "author": "Lee Powell <lee@leepowell.co.uk>",
   "contributors": [
     {
@@ -10,12 +10,12 @@
     }
   ],
   "dependencies": {
-    "validator": "~1.2.1"
+    "validator": "3.x.x"
   },
   "devDependencies": {
-    "mongoose": "~3.6.11",
-    "mocha": "~1.11.0",
-    "should": "~1.2.2"
+    "mongoose": "3.8.x",
+    "mocha": "1.20.x",
+    "should": "3.3.x"
   },
   "keywords": [
     "mongoose",
