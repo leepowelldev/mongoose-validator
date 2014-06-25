@@ -1,12 +1,23 @@
 {
   "name": "mongoose-validator",
-  "description": "Validators for mongoose models utilising node-validator",
-  "version": "0.3.0_alpha",
-  "author": "Lee Powell <lee@leepowell.co.uk>",
+  "description": "Validators for mongoose models utilising validator.js",
+  "version": "1.0.0",
+  "author": {
+    "name": "Lee Powell",
+    "email": "lee@leepowell.co.uk"
+  },
   "contributors": [
     {
       "name": "Francesco Pasqua",
       "url": "https://github.com/cesconix/"
+    },
+    {
+      "name": "Igor Escobar",
+      "url": "https://github.com/igorescobar/"
+    },
+    {
+      "name": "Todd Bluhm",
+      "url": "https://github.com/toddbluhm/"
     }
   ],
   "dependencies": {
@@ -24,7 +35,10 @@
     "models",
     "schema"
   ],
-  "repository": "git://github.com/leepowellcouk/mongoose-validator",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/leepowellcouk/mongoose-validator.git"
+  },
   "main": "./lib/mongoose-validator",
   "scripts": {
     "test": "mocha -R list"

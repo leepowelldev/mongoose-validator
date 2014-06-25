@@ -9,11 +9,6 @@ var mongoose  = require('mongoose'),
     validator = require('validator'),
     Schema    = mongoose.Schema;
 
-// Setters are not run for undefined values
-function set(val) {
-  return val;
-}
-
 // Create a custom validator directly to Node Validator prototype
 // ------------------------------------------------------------
 validator.extend('contains', function (str, needle) {
@@ -30,6 +25,10 @@ extend('notEmpty', function(str) {
   return !str.match(/^[\s\t\r\n]*$/);
 }, 'Empty');
 
+extend('isArray', function(val) {
+  return Array.isArray(val);
+}, 'Not an array');
+
 // Tests
 // ------------------------------------------------------------
 describe('Mongoose Validator', function() {
@@ -42,7 +41,8 @@ describe('Mongoose Validator', function() {
     mongoose.connect(url);
 
     schema = new Schema({
-      name: { type: String, default: null, set: set },
+      name: { type: String, default: null },
+      interests: { type: Array, default: [] },
       date_created: { type: Date, default: date }
     });
 
@@ -67,7 +67,9 @@ describe('Mongoose Validator', function() {
   });
 
   afterEach(function(done) {
+    // Remove the attached validators from tests
     schema.paths.name.validators = [];
+    schema.paths.interests.validators = [];
 
     Person.remove({}, function(err) {
       if (err) return done(err);
@@ -76,7 +78,7 @@ describe('Mongoose Validator', function() {
   });
 
   it('Should pass a validator', function(done) {
-    schema.path('name').validate(validate('isLength', 5, 10));
+    schema.path('name').validate(validate({ validator: 'isLength', arguments: [5, 10] }));
 
     should.exist(doc);
 
@@ -86,13 +88,12 @@ describe('Mongoose Validator', function() {
       should.not.exist(err);
       should.exist(person);
       person.should.have.property('name', 'Jonathan');
-
       return done();
     });
   });
 
   it('Should fail a validator', function(done) {
-    schema.path('name').validate(validate('isLength', 5, 10));
+    schema.path('name').validate(validate({ validator: 'isLength', arguments: [5, 10] }));
 
     should.exist(doc);
 
@@ -103,13 +104,12 @@ describe('Mongoose Validator', function() {
       should.not.exist(person);
       err.should.be.instanceof(Error).and.have.property('name', 'ValidationError');
       err.errors.name.should.have.property('path', 'name');
-
       return done();
     });
   });
 
   it('Should pass a passIfEmpty validator', function(done) {
-    schema.path('name').validate(validate({ passIfEmpty: true }, 'isLength', 5, 10));
+    schema.path('name').validate(validate({ validator: 'isLength', arguments: [5, 10], passIfEmpty: true }));
 
     should.exist(doc);
 
@@ -118,13 +118,12 @@ describe('Mongoose Validator', function() {
     doc.save(function(err, person) {
       should.not.exist(err);
       should.exist(person);
-
       return done();
     });
   });
 
   it('Should fail a passIfEmpty validator', function(done) {
-    schema.path('name').validate(validate({ passIfEmpty: true }, 'isLength', 5, 10));
+    schema.path('name').validate(validate({ validator: 'isLength', arguments: [5, 10], passIfEmpty: true }));
 
     should.exist(doc);
 
@@ -135,13 +134,12 @@ describe('Mongoose Validator', function() {
       should.not.exist(person);
       err.should.be.instanceof(Error).and.have.property('name', 'ValidationError');
       err.errors.name.should.have.property('path', 'name');
-
       return done();
     });
   });
 
   it('Should use custom error message', function(done) {
-    schema.path('name').validate(validate({ message: 'Custom error message' }, 'isLength', 5, 10));
+    schema.path('name').validate(validate({ validator: 'isLength', arguments: [5, 10], message: 'Custom error message' }));
 
     should.exist(doc);
 
@@ -153,13 +151,12 @@ describe('Mongoose Validator', function() {
       err.should.be.instanceof(Error).and.have.property('name', 'ValidationError');
       err.errors.name.should.have.property('path', 'name');
       err.errors.name.message.should.equal('Custom error message');
-
       return done();
     });
   });
 
   it('Should use a custom extend test and pass', function(done) {
-    schema.path('name').validate(validate('isType', 'string'));
+    schema.path('name').validate(validate({ validator: 'isType', arguments: 'string'}));
 
     should.exist(doc);
 
@@ -168,13 +165,12 @@ describe('Mongoose Validator', function() {
     doc.save(function(err, person) {
       should.not.exist(err);
       should.exist(person);
-
       return done();
     });
   });
 
   it('Should use a custom extend test and fail', function(done) {
-    schema.path('name').validate(validate('isType', 'boolean'));
+    schema.path('name').validate(validate({ validator: 'isType', arguments: 'boolean' }));
 
     should.exist(doc);
 
@@ -186,13 +182,12 @@ describe('Mongoose Validator', function() {
       err.should.be.instanceof(Error).and.have.property('name', 'ValidationError');
       err.errors.name.should.have.property('path', 'name');
       err.errors.name.message.should.equal('Not correct type');
-
       return done();
     });
   });
 
   it('Should use a custom extend test and fail with custom error message', function(done) {
-    schema.path('name').validate(validate({ message: 'Custom error message' }, 'isType', 'boolean'));
+    schema.path('name').validate(validate({ validator: 'isType', arguments: 'boolean', message: 'Custom error message' }));
 
     should.exist(doc);
 
@@ -204,13 +199,12 @@ describe('Mongoose Validator', function() {
       err.should.be.instanceof(Error).and.have.property('name', 'ValidationError');
       err.errors.name.should.have.property('path', 'name');
       err.errors.name.message.should.equal('Custom error message');
-
       return done();
     });
   });
 
   it('Should use a custom prototype test and pass', function(done) {
-    schema.path('name').validate(validate('contains', 'J'));
+    schema.path('name').validate(validate({ validator: 'contains', arguments: 'J' }));
 
     should.exist(doc);
 
@@ -219,13 +213,12 @@ describe('Mongoose Validator', function() {
     doc.save(function(err, person) {
       should.not.exist(err);
       should.exist(person);
-
       return done();
     });
   });
 
   it('Should use a custom prototype test and fail', function(done) {
-    schema.path('name').validate(validate('contains', 'K'));
+    schema.path('name').validate(validate({ validator: 'contains', arguments: 'K' }));
 
     should.exist(doc);
 
@@ -236,13 +229,12 @@ describe('Mongoose Validator', function() {
       should.not.exist(person);
       err.should.be.instanceof(Error).and.have.property('name', 'ValidationError');
       err.errors.name.should.have.property('path', 'name');
-
       return done();
     });
   });
 
   it('Should use a custom prototype test and fail with custom error message', function(done) {
-    schema.path('name').validate(validate({ message: 'Custom error message' }, 'contains', 'K'));
+    schema.path('name').validate(validate({ validator: 'contains', arguments: 'K', message: 'Custom error message' }));
 
     should.exist(doc);
 
@@ -254,14 +246,13 @@ describe('Mongoose Validator', function() {
       err.should.be.instanceof(Error).and.have.property('name', 'ValidationError');
       err.errors.name.should.have.property('path', 'name');
       err.errors.name.message.should.equal('Custom error message');
-
       return done();
     });
   });
 
   // https://github.com/leepowellcouk/mongoose-validator/issues/7#issuecomment-20494299
   it('Should pass on legacy isEmail method', function(done) {
-    schema.path('name').validate(validate('isEmail'));
+    schema.path('name').validate(validate({ validator: 'isEmail' }));
 
     should.exist(doc);
 
@@ -270,16 +261,30 @@ describe('Mongoose Validator', function() {
     doc.save(function(err, person) {
       should.not.exist(err);
       should.exist(person);
+      return done();
+    });
+  });
 
+  it('Should pass custom validator using non-string value', function(done) {
+    schema.path('interests').validate(validate({ validator: 'isArray' }));
+
+    should.exist(doc);
+
+    doc.interests = ['cycling', 'fishing'];
+
+    doc.save(function(err, person) {
+      should.not.exist(err);
+      should.exist(person);
+      person.should.have.property('interests').and.match(['cycling', 'fishing']);
       return done();
     });
   });
 
   it('Issue #12', function(done) {
     schema.path('name')
-      .validate(validate({ message: "Username should not be empty" }, 'notEmpty'))
-      .validate(validate({ message: "Username should be between 4 and 40 characters" }, 'isLength', 4, 40))
-      .validate(validate({ message: "Username must only contain letters and digits" }, 'isAlphanumeric'));
+      .validate(validate({ validator: 'notEmpty', message: 'Username should not be empty' }))
+      .validate(validate({ validator: 'isLength', arguments: [4, 40], message: 'Username should be between 4 and 40 characters' }))
+      .validate(validate({ validator: 'isAlphanumeric', message: 'Username must only contain letters and digits' }));
 
     should.exist(doc);
 
@@ -289,7 +294,6 @@ describe('Mongoose Validator', function() {
       should.exist(err);
       should.not.exist(person);
       err.errors.name.message.should.equal('Username should not be empty');
-
       return done();
     });
   });
@@ -304,9 +308,9 @@ describe('Mongoose Validator - Validators in schema declaration', function() {
         many;
 
     many = [
-      validate({ message: "Username should be between 4 and 40 characters" }, 'isLength', 4, 40),
-      validate({ message: "Username must only contain letters and digits" }, 'isAlpha'),
-      validate({ message: "Username should not be empty" }, "notEmpty")
+      validate({ validator: 'notEmpty', message: 'Username should not be empty' }),
+      validate({ validator: 'isLength', passIfEmpty: true, arguments: [4, 40], message: 'Username should be between 4 and 40 characters' }),
+      validate({ validator: 'isAlphanumeric', passIfEmpty: true, message: 'Username must only contain letters and digits' })
     ];
 
     mongoose.connect(url);

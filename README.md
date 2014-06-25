@@ -5,7 +5,9 @@ Validators for [Mongoose](http://mongoosejs.com) schemas utilising [validator.js
 
 Mongoose Validator simply returns Mongoose style validation objects that utilises validator.js for the data validation.
 
-NOTE: As of validator.js 3.0.0 - many of the avilable validators have been changed. For example, 'regex' validator no longer exists and has been replaced with 'matches'.
+Version 1.0.0 has been refactored to support a simplier interface and also validator.js 3.0.x - 1.0.0 is not backwards compatible with pre 1.0.0 releases and it is advised to remain with 0.2.x releases.
+
+**NOTE**: As of validator.js 3.0.x - many of the avilable validators have been changed. For example, 'regex' validator no longer exists and has been replaced with 'matches'.
 
 ##Installation##
 
@@ -13,59 +15,79 @@ NOTE: As of validator.js 3.0.0 - many of the avilable validators have been chang
 
 ##Usage##
 
-	var mongoose = require('mongoose'),
-		validate = require('mongoose-validator').validate;
+	var mongoose = require('mongoose');
+	var validate = require('mongoose-validator').validate;
 
-	// validate([method], [arg1], [arg2] ... );
-
-	var nameValidator = [validate('len', 3, 50), validate('isAlphanumeric')];
+	var nameValidator = [
+	  validate({ 
+	    validator: 'isLength', 
+	    arguments: [3, 50],
+	    message: 'Name should be between 3 and 50 characters'
+	  }), 
+	  validate({ 
+	    validator: 'isAlphanumeric',
+	    passIfEmpty: true,
+	    message: 'Name should contain alpha-numeric characters only'
+	  })
+	];
 
 	var Schema = new mongoose.Schema({
-		name: {type: String, required: true, validate: nameValidator}
+	  name: {type: String, required: true, validate: nameValidator}
 	});
 
 Error objects are returned as normal via Mongoose.
+
+##Options##
+
+###option.validator {string} - required###
+Name of the validator you wish to use, this can be any one of the [built-in validator.js validators](https://github.com/chriso/validator.js/#validators), or a [custom validator](#custom-validators).
+
+###option.arguments - optional###
+Arguments to be passed to the validator. These can either be an array of arguments (for validators that can accept more than one i.e. `isLength`), or a single argument as any type.
+
+###option.passIfEmpty {boolean} - optional - default: false###
+Some of the validator.js validators require a value to check against (isEmail, isUrl etc). There may be instances where you don't have a value to check i.e. a path that is not required and as such these few validators return an false value causing validation to fail. This can now be bypassed by setting the `passIfEmpty` option.
+
+###option.message - optional###
+Set the error message to be used should the validator fail. If no error message is set then mongoose-validator will attempt to use one of the built-in default messages, if it can't then a simple message of 'Error' will be returned.
 
 ##Regular Expressions##
 
 Mongoose Validator can use the validator.js `matches` method, however, it's worth noting that the regex can be passed in 2 ways - as per the validator.js documentation, firstly they can be passed as a literal:
 
-    validate('matches', /^[a-zA-Z\-]+$/i);
+    validate({
+      validator: 'matches',
+      arguments: /^[a-zA-Z\-]+$/i
+    });
 
 or as a string with a further argument containing any required modifiers:
 
-    validate('matches', '^[a-zA-Z\-]+$', 'i');
+    validate({
+      validator: 'matches',
+      arguments: ['^[a-zA-Z\-]+$', 'i']
+    });
 
-##Error Messages##
+## <a name="custom-validators"></a>Custom validators ##
 
-Custom error messages are now back in `0.2.1` and can be set through the options object:
+Custom validators can also be added - these are then added to the validator.js object.
+**NOTE**: Validator.js converts all values to strings internally for built-in validators - however custom validators do *not* do this. This allows you to create custom validators for checking all types such as arrays and objects.
 
-    validate({message: "String should be between 3 and 50 characters"}, 'len', 3, 50)
-
-## Pass validation if empty ##
-
-Some of the validator.js validators require a value to check against (isEmail, isUrl etc). There may be instances where you don't have a value to check i.e. a path that is not required and as such these few validators return an false value causing validation to fail. This can now be bypassed by setting the `passIfEmpty` option:
-
-    var validator = validate({passIfEmpty: true}, 'isUrl');
-
-    website: {type: String, validate: validator};
-
-## Custom validators ##
-
-Custom validators can also be added:
-
-    // extend([method name], [validator], [default error message])
-
-    require('mongoose-validator').extend('isString', function (str) {
-	    return 'string' === typeof str;
+	// extend([method name], [validator], [default error message])
+	
+	var extend = require('mongoose-validator').extend;
+	
+    extend('isString', function (val) {
+      return Object.prototype.toString.call(val) === '[object String]';
     }, 'Not a string');
 
 Custom validators are called normally:
 
-    validate({passIfEmpty: true}, 'isType', 'string');
+    validate({
+      validator: 'isString'
+    });
 
-NOTE: As per validator.js documentation, the currently tested value is accessed through the first argument that is automatically passed.
+NOTE: As per validator.js documentation, the currently tested value is accessed through the first argument that is automatically passed to the validator function.
 
 ##Contributors##
 
-Special thanks to Francesco Pasqua for heavily refactoring the code into something far more future proof.
+Special thanks to [Francesco Pasqua](https://github.com/cesconix/) for heavily refactoring the code into something far more future proof. Thanks also go to [Igor Escobar](https://github.com/igorescobar/) and [Todd Bluhm](https://github.com/toddbluhm/) for their contributions.
