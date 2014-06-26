@@ -35,7 +35,7 @@ describe('Mongoose Validator', function() {
   var doc, schema, Person;
 
   before(function(done) {
-    var url  = 'mongodb://localhost/mongoose_validator_test',
+    var url  = 'mongodb://127.0.0.1/mongoose_validator_test',
         date = Date.now();
 
     mongoose.connect(url);
