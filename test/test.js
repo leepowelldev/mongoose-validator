@@ -4,7 +4,7 @@
 
 var mongoose  = require('mongoose'),
     should    = require('should'),
-    validate  = require('../lib/mongoose-validator').validate,
+    validate  = require('../lib/mongoose-validator'),
     extend    = require('../lib/mongoose-validator').extend,
     validator = require('validator'),
     Schema    = mongoose.Schema;
