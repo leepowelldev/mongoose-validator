@@ -282,7 +282,7 @@ describe('Mongoose Validator', function() {
     });
   });
 
-  it('Should pass custom validator by passing a function directly', function(done) {
+  it('Should pass custom validator when a custom function is passed directly', function(done) {
 
     schema.path('age').validate(validate({
         validator: function(val) {
@@ -303,7 +303,7 @@ describe('Mongoose Validator', function() {
     });
   });
 
-  it('Should fail custom validator by passing a function directly', function(done) {
+  it('Should fail custom validator when a custom function is passed directly', function(done) {
 
     schema.path('age').validate(validate({
         validator: function(val) {
