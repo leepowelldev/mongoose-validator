@@ -43,6 +43,7 @@ describe('Mongoose Validator', function() {
     schema = new Schema({
       name: { type: String, default: null },
       interests: { type: Array, default: [] },
+      age: { type: Number, default: null },
       date_created: { type: Date, default: date }
     });
 
@@ -70,6 +71,7 @@ describe('Mongoose Validator', function() {
     // Remove the attached validators from tests
     schema.paths.name.validators = [];
     schema.paths.interests.validators = [];
+    schema.paths.age.validators = [];
 
     Person.remove({}, function(err) {
       if (err) return done(err);
@@ -277,6 +279,50 @@ describe('Mongoose Validator', function() {
       should.exist(person);
       person.should.have.property('interests').and.match(['cycling', 'fishing']);
       return done();
+    });
+  });
+
+  it('Should pass custom validator when a custom function is passed directly', function(done) {
+
+    schema.path('age').validate(validate({
+        validator: function(val) {
+            return val > 18;
+        },
+        message: 'Age must be greater than 18'
+    }));
+
+    should.exist(doc);
+
+    doc.age = 20;
+
+    doc.save(function(err, person) {
+      should.not.exist(err);
+      should.exist(person);
+      person.should.have.property('age').and.match(20);
+      return done();
+    });
+  });
+
+  it('Should fail custom validator when a custom function is passed directly', function(done) {
+
+    schema.path('age').validate(validate({
+        validator: function(val) {
+            return val > 18;
+        },
+        message: 'Age must be greater than 18'
+    }));
+
+    should.exist(doc);
+
+    doc.age = 10;
+
+    doc.save(function(err, person) {
+        should.exist(err);
+        should.not.exist(person);
+        err.should.be.instanceof(Error).and.have.property('name', 'ValidationError');
+        err.errors.age.should.have.property('path', 'age');
+        err.errors.age.message.should.equal('Age must be greater than 18');
+        return done();
     });
   });
 

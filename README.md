@@ -54,8 +54,8 @@ Error objects are returned as normal via Mongoose.
 
 ## Options
 
-### option.validator {string} - required
-Name of the validator you wish to use, this can be any one of the [built-in validator.js validators](https://github.com/chriso/validator.js/#validators), or a [custom validator](#custom-validators).
+### option.validator {string} or {function} - required
+Name of the validator or a custom function you wish to use, this can be any one of the [built-in validator.js validators](https://github.com/chriso/validator.js/#validators), or a [custom validator](#custom-validators).
 
 ### option.arguments - optional
 Arguments to be passed to the validator. These can either be an array of arguments (for validators that can accept more than one i.e. `isLength`), or a single argument as any type.
@@ -107,6 +107,17 @@ Custom validators are called normally:
 validate({
   validator: 'isString'
 });
+```
+
+Custom validator can be passed directly as a function:
+
+```javascript
+validate({
+  validator: function(val) {
+    return val > 0;
+  },
+  message: 'Count must be a positive number.'
+})
 ```
 
 NOTE: As per validator.js documentation, the currently tested value is accessed through the first argument that is automatically passed to the validator function.
