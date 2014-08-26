@@ -1,7 +1,7 @@
 {
   "name": "mongoose-validator",
   "description": "Validators for mongoose models utilising validator.js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": {
     "name": "Lee Powell",
     "email": "lee@leepowell.co.uk"
@@ -18,6 +18,10 @@
     {
       "name": "Todd Bluhm",
       "url": "https://github.com/toddbluhm/"
+    },
+    {
+      "name": "Subash Pathak",
+      "url": "https://github.com/subash/"
     }
   ],
   "dependencies": {
