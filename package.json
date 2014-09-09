@@ -25,7 +25,7 @@
     }
   ],
   "dependencies": {
-    "validator": "3.x.x"
+    "validator": "3.18.x"
   },
   "devDependencies": {
     "mongoose": "3.8.x",
