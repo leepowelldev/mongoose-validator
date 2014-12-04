@@ -29,7 +29,7 @@
     }
   ],
   "dependencies": {
-    "validator": "3.18.x"
+    "validator": "^3.18.0"
   },
   "devDependencies": {
     "mongoose": "3.8.x",
