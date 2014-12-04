@@ -2,16 +2,16 @@
 
 'use strict';
 
-var mongoose  = require('mongoose'),
-    should    = require('should'),
-    validate  = require('../lib/mongoose-validator'),
-    extend    = require('../lib/mongoose-validator').extend,
-    validator = require('validator'),
-    Schema    = mongoose.Schema;
+var mongoose    = require('mongoose'),
+    should      = require('should'),
+    validate    = require('../lib/mongoose-validator'),
+    extend      = require('../lib/mongoose-validator').extend,
+    validatorjs = require('../lib/mongoose-validator').validatorjs,
+    Schema      = mongoose.Schema;
 
 // Create a custom validator directly to Node Validator prototype
 // ------------------------------------------------------------
-validator.extend('contains', function (str, needle) {
+validatorjs.extend('contains', function (str, needle) {
   return -1 !== str.indexOf(needle);
 });
 
