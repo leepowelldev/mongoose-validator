@@ -77,10 +77,8 @@ var alphaValidator = validate({
     message: 'Name should contain alpha-numeric characters only',
     httpStatus: 400
   });
-
-In this example the error object returned by mongoose will have its 'properties' extended with httpStatus should validation fail.
-
 ```
+In this example the error object returned by mongoose will have its 'properties' extended with httpStatus should validation fail.
 
 ## Regular Expressions
 
