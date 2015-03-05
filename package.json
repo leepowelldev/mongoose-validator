@@ -29,6 +29,7 @@
     }
   ],
   "dependencies": {
+    "underscore": "^1.8.2",
     "validator": "^3.18.0"
   },
   "devDependencies": {
