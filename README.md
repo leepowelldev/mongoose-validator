@@ -66,6 +66,22 @@ Some of the validator.js validators require a value to check against (isEmail, i
 ### option.message - optional
 Set the error message to be used should the validator fail. If no error message is set then mongoose-validator will attempt to use one of the built-in default messages, if it can't then a simple message of 'Error' will be returned.
 
+### Extending the error properties (mongoose version >= 3.9.7)
+
+Any additional members added to the options object will be available in the 'err.properties' field of the mongoose validation error.
+
+```javascript
+var alphaValidator = validate({
+    validator: 'isAlphanumeric',
+    passIfEmpty: true,
+    message: 'Name should contain alpha-numeric characters only',
+    httpStatus: 400
+  });
+
+In this example the error object returned by mongoose will have its 'properties' extended with httpStatus should validation fail.
+
+```
+
 ## Regular Expressions
 
 Mongoose Validator can use the validator.js `matches` method, however, it's worth noting that the regex can be passed in 2 ways - as per the validator.js documentation, firstly they can be passed as a literal:
