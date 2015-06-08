@@ -158,7 +158,7 @@ describe('Mongoose Validator', function() {
   });
 
   it('Should replace args on custom error message', function (done) {
-    schema.path('name').validate(validate({ validator: 'isLength', arguments: [5, 10], message: 'at least {{args.0}} and less than {{args.1}}' }));
+    schema.path('name').validate(validate({ validator: 'isLength', arguments: [5, 10], message: 'at least {args.0} and less than {args.1}' }));
 
     should.exist(doc);
 

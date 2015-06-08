@@ -36,7 +36,7 @@ var nameValidator = [
   validate({
     validator: 'isLength',
     arguments: [3, 50],
-    message: 'Name should be between 3 and 50 characters'
+    message: 'Name should be between {args.0} and {args.1} characters'
   }),
   validate({
     validator: 'isAlphanumeric',
@@ -64,7 +64,7 @@ Arguments to be passed to the validator. These can either be an array of argumen
 Some of the validator.js validators require a value to check against (isEmail, isUrl etc). There may be instances where you don't have a value to check i.e. a path that is not required and as such these few validators return an false value causing validation to fail. This can now be bypassed by setting the `passIfEmpty` option.
 
 ### option.message - optional
-Set the error message to be used should the validator fail. If no error message is set then mongoose-validator will attempt to use one of the built-in default messages, if it can't then a simple message of 'Error' will be returned.
+Set the error message to be used should the validator fail. If no error message is set then mongoose-validator will attempt to use one of the built-in default messages, if it can't then a simple message of 'Error' will be returned. You can pass `{args.indexPosition}` for replacing chunks of message by argument's value. Use `{args.0}` if your arguments isn't an array.
 
 ## Regular Expressions
 
