@@ -36,7 +36,7 @@ var nameValidator = [
   validate({
     validator: 'isLength',
     arguments: [3, 50],
-    message: 'Name should be between 3 and 50 characters'
+    message: 'Name should be between {args.0} and {args.1} characters' // Argument interpolation
   }),
   validate({
     validator: 'isAlphanumeric',
@@ -64,21 +64,15 @@ Arguments to be passed to the validator. These can either be an array of argumen
 Some of the validator.js validators require a value to check against (isEmail, isUrl etc). There may be instances where you don't have a value to check i.e. a path that is not required and as such these few validators return an false value causing validation to fail. This can now be bypassed by setting the `passIfEmpty` option.
 
 ### option.message - optional
-Set the error message to be used should the validator fail. If no error message is set then mongoose-validator will attempt to use one of the built-in default messages, if it can't then a simple message of 'Error' will be returned.
-
-### Extending the error properties (mongoose version >= 3.9.7)
-
-Any additional members added to the options object will be available in the 'err.properties' field of the mongoose validation error.
+Set the error message to be used should the validator fail. If no error message is set then mongoose-validator will attempt to use one of the built-in default messages, if it can't then a simple message of 'Error' will be returned. You can pass `{args.[argument index position]}` for crude argument interpolation. Note: Use `{args.0}` if your arguments isn't an array.
 
 ```javascript
-var alphaValidator = validate({
-    validator: 'isAlphanumeric',
-    passIfEmpty: true,
-    message: 'Name should contain alpha-numeric characters only',
-    httpStatus: 400
-  });
+validate({
+  validator: 'isLength',
+  arguments: [3, 50],
+  message: 'Name should be between {args.0} and {args.1} characters'
+}),
 ```
-In this example the error object returned by mongoose will have its 'properties' extended with httpStatus should validation fail.
 
 ## Regular Expressions
 
@@ -139,3 +133,26 @@ NOTE: As per validator.js documentation, the currently tested value is accessed 
 ## Contributors
 
 Special thanks to [Francesco Pasqua](https://github.com/cesconix/) for heavily refactoring the code into something far more future proof. Thanks also go to [Igor Escobar](https://github.com/igorescobar/) and [Todd Bluhm](https://github.com/toddbluhm/) for their contributions.
+
+## License (MIT)
+
+Copyright (c) 2015 Lee Powell <lee@leepowell.co.uk>
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

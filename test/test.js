@@ -157,6 +157,23 @@ describe('Mongoose Validator', function() {
     });
   });
 
+  it('Should replace args on custom error message', function (done) {
+    schema.path('name').validate(validate({ validator: 'isLength', arguments: [5, 10], message: 'At least {args.0} and less than {args.1}' }));
+
+    should.exist(doc);
+
+    doc.name = 'Joe';
+
+    doc.save(function(err, person) {
+      should.exist(err);
+      should.not.exist(person);
+      err.should.be.instanceof(Error).and.have.property('name', 'ValidationError');
+      err.errors.name.should.have.property('path', 'name');
+      err.errors.name.message.should.equal('At least 5 and less than 10');
+      return done();
+    });
+  });
+
   it('Should use a custom extend test and pass', function(done) {
     schema.path('name').validate(validate({ validator: 'isType', arguments: 'string'}));
 

@@ -1,7 +1,7 @@
 {
   "name": "mongoose-validator",
   "description": "Validators for mongoose models utilising validator.js",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "author": {
     "name": "Lee Powell",
     "email": "lee@leepowell.co.uk"
@@ -26,16 +26,19 @@
     {
       "name": "Kristijan Sedlak",
       "url": "https://github.com/xpepermint"
+    },
+    {
+      "name": "Eric Saboia",
+      "url": "https://github.com/ericsaboia"
     }
   ],
   "dependencies": {
-    "underscore": "^1.8.2",
     "validator": "^3.18.0"
   },
   "devDependencies": {
-    "mongoose": "3.8.x",
-    "mocha": "1.20.x",
-    "should": "3.3.x"
+    "mongoose": "^4.0.5",
+    "mocha": "^2.2.5",
+    "should": "^3.3.1"
   },
   "keywords": [
     "mongoose",
