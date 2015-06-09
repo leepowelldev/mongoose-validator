@@ -36,7 +36,7 @@ var nameValidator = [
   validate({
     validator: 'isLength',
     arguments: [3, 50],
-    message: 'Name should be between {args.0} and {args.1} characters' // Argument interpolation
+    message: 'Name should be between {ARGS[0]} and {ARGS[1]} characters'
   }),
   validate({
     validator: 'isAlphanumeric',
@@ -64,15 +64,21 @@ Arguments to be passed to the validator. These can either be an array of argumen
 Some of the validator.js validators require a value to check against (isEmail, isUrl etc). There may be instances where you don't have a value to check i.e. a path that is not required and as such these few validators return an false value causing validation to fail. This can now be bypassed by setting the `passIfEmpty` option.
 
 ### option.message - optional
-Set the error message to be used should the validator fail. If no error message is set then mongoose-validator will attempt to use one of the built-in default messages, if it can't then a simple message of 'Error' will be returned. You can pass `{args.[argument index position]}` for crude argument interpolation. Note: Use `{args.0}` if your arguments isn't an array.
+Set the error message to be used should the validator fail. If no error message is set then mongoose-validator will attempt to use one of the built-in default messages, if it can't then a simple message of 'Error' will be returned. Enhanced message templating is supported by giving the ability to use the validator arguments. You can use these like `{ARGS[argument index position]}`. Note: Use `{ARGS[0]}` if your arguments isn't an array.
 
 ```javascript
 validate({
   validator: 'isLength',
   arguments: [3, 50],
-  message: 'Name should be between {args.0} and {args.1} characters'
+  message: 'Name should be between {ARGS[0]} and {ARGS[1]} characters'
 }),
+
+// On error produces: Name should be between 3 and 50 characters
 ```
+The built in Mongoose message template variables still work as expected. You can find out more about those here: [http://mongoosejs.com/docs/api.html#error_messages_MongooseError-messages](http://mongoosejs.com/docs/api.html#error_messages_MongooseError-messages)
+
+### option.type - optional
+Set the type of validator type. If this is not defined, Mongoose will set this for you. Read more about this here: [http://mongoosejs.com/docs/api.html#schematype_SchemaType-validate](http://mongoosejs.com/docs/api.html#schematype_SchemaType-validate)
 
 ## Regular Expressions
 
@@ -94,7 +100,7 @@ validate({
 });
 ```
 
-## <a name="custom-validators"></a>Custom validators
+## Custom validators
 
 Custom validators can also be added - these are then added to the validator.js object.
 **NOTE**: Validator.js converts all values to strings internally for built-in validators - however custom validators do *not* do this. This allows you to create custom validators for checking all types such as arrays and objects.
