@@ -80,6 +80,20 @@ The built in Mongoose message template variables still work as expected. You can
 ### option.type - optional
 Set the type of validator type. If this is not defined, Mongoose will set this for you. Read more about this here: [http://mongoosejs.com/docs/api.html#schematype_SchemaType-validate](http://mongoosejs.com/docs/api.html#schematype_SchemaType-validate)
 
+### Extending the error properties (mongoose version >= 3.9.7)
+
+Any additional members added to the options object will be available in the 'err.properties' field of the mongoose validation error.
+
+```javascript
+var alphaValidator = validate({
+    validator: 'isAlphanumeric',
+    passIfEmpty: true,
+    message: 'Name should contain alpha-numeric characters only',
+    httpStatus: 400
+  });
+```
+In this example the error object returned by mongoose will have its 'properties' extended with httpStatus should validation fail. More details can be found about this here: [http://thecodebarbarian.com/2014/12/19/mongoose-397](http://thecodebarbarian.com/2014/12/19/mongoose-397)
+
 ## Regular Expressions
 
 Mongoose Validator can use the validator.js `matches` method, however, it's worth noting that the regex can be passed in 2 ways - as per the validator.js documentation, firstly they can be passed as a literal:

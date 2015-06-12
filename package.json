@@ -1,7 +1,7 @@
 {
   "name": "mongoose-validator",
   "description": "Validators for mongoose models utilising validator.js",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "author": {
     "name": "Lee Powell",
     "email": "lee@leepowell.co.uk"
@@ -30,15 +30,20 @@
     {
       "name": "Eric Saboia",
       "url": "https://github.com/ericsaboia"
+    },
+    {
+      "name": "Rob Rodriguez",
+      "url": "https://github.com/rodriguise"
     }
   ],
   "dependencies": {
+    "underscore": "^1.8.3",
     "validator": "^3.18.0"
   },
   "devDependencies": {
     "mongoose": "^4.0.5",
     "mocha": "^2.2.5",
-    "should": "^3.3.1"
+    "should": "^6.0.3"
   },
   "keywords": [
     "mongoose",
