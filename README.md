@@ -21,7 +21,7 @@ $ npm install mongoose-validator --save
 If you need to install the 0.2.2 release, use the following command:
 
 ```bash
-$ npm install mongoose-validation@0.2.2 --save
+$ npm install mongoose-validator@0.2.2 --save
 ```
 
 More details on 0.2.2 can be found [here](https://github.com/leepowellcouk/mongoose-validator/blob/0.2.2/README.md)
