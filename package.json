@@ -4,7 +4,39 @@
   "version": "1.2.3",
   "author": {
     "name": "Lee Powell",
-    "email": "lee@leepowell.co.uk"
+    "email": "lee@leepowell.co.uk",
+    "url": "https://leepowell.co.uk"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/leepowellcouk/mongoose-validator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/leepowellcouk/mongoose-validator/issues"
+  },
+  "license": "MIT",
+  "main": "./lib/mongoose-validator",
+  "scripts": {
+    "test": "mocha -R list"
+  },
+  "engines": {
+    "node": "*"
+  },
+  "keywords": [
+    "mongoose",
+    "validate",
+    "validation",
+    "models",
+    "schema"
+  ],
+  "dependencies": {
+    "underscore": "^1.8.3",
+    "validator": "^4.0.2"
+  },
+  "devDependencies": {
+    "mongoose": "^4.0.5",
+    "mocha": "^2.2.5",
+    "should": "^6.0.3"
   },
   "contributors": [
     {
@@ -35,32 +67,5 @@
       "name": "Rob Rodriguez",
       "url": "https://github.com/rodriguise"
     }
-  ],
-  "dependencies": {
-    "underscore": "^1.8.3",
-    "validator": "^4.0.2"
-  },
-  "devDependencies": {
-    "mongoose": "^4.0.5",
-    "mocha": "^2.2.5",
-    "should": "^6.0.3"
-  },
-  "keywords": [
-    "mongoose",
-    "validate",
-    "validation",
-    "models",
-    "schema"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/leepowellcouk/mongoose-validator.git"
-  },
-  "main": "./lib/mongoose-validator",
-  "scripts": {
-    "test": "mocha -R list"
-  },
-  "engines": {
-    "node": "*"
-  }
+  ]
 }
