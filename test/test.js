@@ -29,6 +29,10 @@ extend('isArray', function(val) {
   return Array.isArray(val);
 }, 'Not an array');
 
+extend('isContextEqlModelInstance', function(val) {
+  return this._id && this.name === val;
+}, 'this is not a model instance');
+
 // Tests
 // ------------------------------------------------------------
 describe('Mongoose Validator:', function() {
@@ -425,6 +429,21 @@ describe('Mongoose Validator:', function() {
         should.exist(err);
         should.not.exist(person);
         err.errors.name.message.should.equal('Username should not be empty');
+        return done();
+      });
+    });
+
+    it('Custom validator calls with this = model instance', function(done) {
+
+      schema.path('name').validate(validate({ validator: 'isContextEqlModelInstance' }));
+
+      should.exist(doc);
+
+      doc.name = 'Joe';
+
+      doc.save(function(err, person) {
+        should.not.exist(err);
+        should.exist(person);
         return done();
       });
     });
