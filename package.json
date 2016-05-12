@@ -1,7 +1,7 @@
 {
   "name": "mongoose-validator",
   "description": "Validators for mongoose models utilising validator.js",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "author": {
     "name": "Lee Powell",
     "email": "lee@leepowell.co.uk",
