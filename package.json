@@ -31,7 +31,7 @@
   ],
   "dependencies": {
     "underscore": "^1.8.3",
-    "validator": "^4.0.2"
+    "validator": "^7.0.0"
   },
   "devDependencies": {
     "mongoose": "^4.0.5",
