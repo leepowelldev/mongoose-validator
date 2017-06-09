@@ -1,7 +1,5 @@
 (function(undefined) {
 
-'use strict'
-
 const mongoose             = require('mongoose')
 const should               = require('should')
 const validate             = require('..')
