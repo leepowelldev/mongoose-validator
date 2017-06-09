@@ -13,7 +13,7 @@ Version 1.0.x has been refactored to support a simpler interface and also valida
 ## Installation
 
 ```bash
-$ npm install mongoose-validator --save
+$ npm i mongoose-validator -S
 ```
 
 ### Legacy install
@@ -21,7 +21,7 @@ $ npm install mongoose-validator --save
 If you need to install the 0.2.2 release, use the following command:
 
 ```bash
-$ npm install mongoose-validator@0.2.2 --save
+$ npm i mongoose-validator@0.2.2 -S
 ```
 
 More details on 0.2.2 can be found [here](https://github.com/leepowellcouk/mongoose-validator/blob/0.2.2/README.md)
@@ -94,24 +94,21 @@ var alphaValidator = validate({
 ```
 In this example the error object returned by mongoose will have its 'properties' extended with httpStatus should validation fail. More details can be found about this here: [http://thecodebarbarian.com/2014/12/19/mongoose-397](http://thecodebarbarian.com/2014/12/19/mongoose-397)
 
-## Regular Expressions
+## Async validators
 
-Mongoose Validator can use the validator.js `matches` method, however, it's worth noting that the regex can be passed in 2 ways - as per the validator.js documentation, firstly they can be passed as a literal:
-
-```javascript
-validate({
-  validator: 'matches',
-  arguments: /^[a-zA-Z\-]+$/i
-});
-```
-
-or as a string with a further argument containing any required modifiers:
+By default Mongoose runs all validators synchronously, if you need to perform asynchronous validation you can do so by returning a [Promise](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise) from your validator.
 
 ```javascript
 validate({
-  validator: 'matches',
-  arguments: ['^[a-zA-Z\-]+$', 'i']
-});
+  validator: function(val) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve(val > 0)
+      }, 500)
+    });
+  },
+  message: 'Count must be a positive number.'
+})
 ```
 
 ## Custom validators
@@ -149,6 +146,26 @@ validate({
 ```
 
 NOTE: As per validator.js documentation, the currently tested value is accessed through the first argument that is automatically passed to the validator function.
+
+## Regular Expressions
+
+Mongoose Validator can use the validator.js `matches` method, however, it's worth noting that the regex can be passed in 2 ways - as per the validator.js documentation, firstly they can be passed as a literal:
+
+```javascript
+validate({
+  validator: 'matches',
+  arguments: /^[a-zA-Z\-]+$/i
+});
+```
+
+or as a string with a further argument containing any required modifiers:
+
+```javascript
+validate({
+  validator: 'matches',
+  arguments: ['^[a-zA-Z\-]+$', 'i']
+});
+```
 
 ## Contributors
 
