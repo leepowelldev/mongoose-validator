@@ -34,16 +34,15 @@
 	],
 	"dependencies": {
 		"is": "^3.2.1",
-		"mocha": "^3.4.1"
+		"mocha": "^3.4.1",
+		"validator": "^7.0.0"
 	},
 	"devDependencies": {
 		"jsdoc": "^3.4.3",
 		"mongoose": "^4.10.0",
-		"should": "^11.2.1",
-		"validator": "^7.0.0"
+		"should": "^11.2.1"
 	},
-	"contributors": [
-		{
+	"contributors": [{
 			"name": "Francesco Pasqua",
 			"url": "https://github.com/cesconix/"
 		},
