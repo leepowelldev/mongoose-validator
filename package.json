@@ -34,7 +34,7 @@
 	],
 	"dependencies": {
 		"is": "^3.2.1",
-		"validator": "^7.0.0"
+		"validator": "^9.4.0"
 	},
 	"devDependencies": {
 		"jsdoc": "^3.4.3",
