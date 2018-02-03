@@ -33,60 +33,43 @@
  * @copyright MIT
  */
 
-const validatorjs          = require('validator')
+const validatorjs = require('validator')
+const is = require('is')
 const defaultErrorMessages = require('./default-error-messages')
-const customValidators     = {}
-const customErrorMessages  = {}
+const customValidators = {}
+const customErrorMessages = {}
 
-const omit = function omit(obj, ...keys) {
+const omit = function omit (obj, ...keys) {
   return Object.keys(obj)
-           .filter(key => !keys.includes(key))
-           .reduce((acc, val) => {
-             acc[val] = obj[val];
-             return acc
-           }, {})
+    .filter(key => !keys.includes(key))
+    .reduce((acc, val) => {
+      acc[val] = obj[val]
+      return acc
+    }, {})
 }
 
-const getValidatorFn = function getValidatorFn(validator) {
-  if (typeof validator === 'function')
+const getValidatorFn = function getValidatorFn (validator) {
+  // Validator has been passed as a function so just return it
+  if (is.function(validator)) {
     return validator
-  else if (typeof validator === 'string' &amp;&amp; validator !== '')
+  }
+  // Validator has been passed as a string (i.e. 'isLength'), try to find the validator is validator.js or custom validators
+  if (is.string(validator) &amp;&amp; !is.empty(validator)) {
     return validatorjs[validator] || customValidators[validator] || undefined
-  else
-    return undefined
+  }
 }
 
-const toArray = function toArray(val) {
-  if (Array.isArray(val))
-    return val
-  else if (val === undefined || val === null)
-    return []
-  else
-    return Array.of(val)
-}
+const toArray = (val = []) => (is.array(val) ? val : Array.of(val))
 
-const findFirstString = function findFirstString(...vals) {
-  let found = false
-  return vals.reduce((acc, val) => {
-    if (typeof val === 'string' &amp;&amp; !found) {
-      found = true
-      return val
-    }
-    else return acc
-  }, undefined)
-}
+const findFirstString = (...vals) => vals.filter(is.string).shift()
 
-const interpolateMessageWithArgs = function interpolateMessageWithArgs(message, args) {
-  return message.replace(/{ARGS\[(\d+)\]}/g, (match, submatch) => {
-    const val = args[submatch];
-    return val !== undefined ? val : '';
-  })
-}
+const interpolateMessageWithArgs = (message = '', args = []) =>
+  message.replace(/{ARGS\[(\d+)\]}/g, (match, submatch) => args[submatch] || '')
 
-const composeValidator = function composeValidator(fn, args, passIfEmpty) {
-  return function validator(val) {
+const createValidator = function createValidator (fn, args, passIfEmpty) {
+  return function validator (val) {
     const validatorArgs = [val].concat(args)
-    if (passIfEmpty &amp;&amp; (val === '' || val === null) || val === undefined) {
+    if ((passIfEmpty &amp;&amp; (is.empty(val) || is.nil(val))) || is.undef(val)) {
       return true
     }
     return fn.apply(this, validatorArgs)
@@ -113,30 +96,43 @@ const composeValidator = function composeValidator(fn, args, passIfEmpty) {
  * @example
  * require('mongoose-validator').validate({ validator: 'isLength', arguments: [4, 40], passIfEmpty: true, message: 'Value should be between 4 and 40 characters' )
  */
-const validate = function validate(options) {
-  if (options.validator === undefined) {
+const validate = function validate (options) {
+  if (is.undef(options.validator)) {
     throw new Error('validator option undefined')
   }
 
-  const validatorType = typeof options.validator
-
-  if (validatorType !== 'function' &amp;&amp; validatorType !== 'string') {
-    throw new Error(`validator must be of type function or string, received ${validatorType}`)
+  if (!is.function(options.validator) &amp;&amp; !is.string(options.validator)) {
+    throw new Error(
+      `validator must be of type function or string, received ${typeof options.validator}`
+    )
   }
 
-  const validatorName = validatorType === 'string' ? options.validator : ''
-  const validatorFn   = getValidatorFn(options.validator)
+  const validatorName = is.string(options.validator) ? options.validator : ''
+  const validatorFn = getValidatorFn(options.validator)
 
-  if (validatorFn === undefined) {
-    throw new Error(`validator \`${validatorName}\` does not exist in validator.js or as a custom validator`)
+  if (is.undef(validatorFn)) {
+    throw new Error(
+      `validator \`${validatorName}\` does not exist in validator.js or as a custom validator`
+    )
   }
 
-  const passIfEmpty   = !!options.passIfEmpty
-  const mongooseOpts  = omit(options, 'passIfEmpty', 'message', 'validator', 'arguments')
-  const args          = toArray(options.arguments)
-  const messageStr    = findFirstString(options.message, customErrorMessages[validatorName], defaultErrorMessages[validatorName])
-  const message       = interpolateMessageWithArgs(messageStr, args)
-  const validator     = composeValidator(validatorFn, args, passIfEmpty)
+  const passIfEmpty = !!options.passIfEmpty
+  const mongooseOpts = omit(
+    options,
+    'passIfEmpty',
+    'message',
+    'validator',
+    'arguments'
+  )
+  const args = toArray(options.arguments)
+  const messageStr = findFirstString(
+    options.message,
+    customErrorMessages[validatorName],
+    defaultErrorMessages[validatorName],
+    'Error'
+  )
+  const message = interpolateMessageWithArgs(messageStr, args)
+  const validator = createValidator(validatorFn, args, passIfEmpty)
 
   return Object.assign(
     {
@@ -165,24 +161,30 @@ const validate = function validate(options) {
  * @example
  * require('mongoose-validator').extend('isString', function (str) { return typeof str === 'string' }, 'Not a string')
  */
-validate.extend = function extend(name, fn, msg = 'Error') {
+validate.extend = function extend (name, fn, msg = 'Error') {
   if (typeof name !== 'string') {
     throw new Error(`name must be a string, received ${typeof name}`)
   }
+
   if (typeof fn !== 'function') {
     throw new Error(`validator must be a function, received ${typeof fn}`)
   }
+
   if (typeof msg !== 'string') {
     throw new Error(`message must be a string, received ${typeof msg}`)
   }
+
   if (name === '') {
     throw new Error('name is required')
   }
+
   if (customValidators[name]) {
     throw new Error(`validator \`${name}\` already exists`)
   }
 
-  customValidators[name]    = function (...args) { return fn.apply(this, args) }
+  customValidators[name] = function (...args) {
+    return fn.apply(this, args)
+  }
   customErrorMessages[name] = msg
 }
 
@@ -208,7 +210,7 @@ module.exports = validate
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed May 24 2017 23:06:49 GMT+0100 (BST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Feb 03 2018 12:44:49 GMT+0000 (UTC)
 </footer>
 
 <script> prettyPrint(); </script>
