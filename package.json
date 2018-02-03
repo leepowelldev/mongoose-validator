@@ -1,75 +1,96 @@
 {
-	"name": "mongoose-validator",
-	"description": "Validators for mongoose models utilising validator.js",
-	"version": "1.3.2",
-	"author": {
-		"name": "Lee Powell",
-		"email": "lee@leepowell.co.uk",
-		"url": "https://leepowell.co.uk"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git://github.com/leepowellcouk/mongoose-validator.git"
-	},
-	"bugs": {
-		"url": "https://github.com/leepowellcouk/mongoose-validator/issues"
-	},
-	"license": "MIT",
-	"main": "./lib/mongoose-validator",
-	"scripts": {
-		"test": "mocha -R list",
-		"preversion": "npm test",
-		"postversion": "git push && git push --tags",
-		"docs": "jsdoc lib/mongoose-validator.js -d ./docs/"
-	},
-	"engines": {
-		"node": "*"
-	},
-	"keywords": [
-		"mongoose",
-		"validate",
-		"validation",
-		"models",
-		"schema"
-	],
-	"dependencies": {
-		"is": "^3.2.1",
-		"validator": "^7.0.0"
-	},
-	"devDependencies": {
-		"jsdoc": "^3.4.3",
-		"mongoose": "^4.10.0",
-		"should": "^11.2.1",
-		"mocha": "^3.4.1"
-	},
-	"contributors": [
-		{
-			"name": "Francesco Pasqua",
-			"url": "https://github.com/cesconix/"
-		},
-		{
-			"name": "Igor Escobar",
-			"url": "https://github.com/igorescobar/"
-		},
-		{
-			"name": "Todd Bluhm",
-			"url": "https://github.com/toddbluhm/"
-		},
-		{
-			"name": "Subash Pathak",
-			"url": "https://github.com/subash/"
-		},
-		{
-			"name": "Kristijan Sedlak",
-			"url": "https://github.com/xpepermint"
-		},
-		{
-			"name": "Eric Saboia",
-			"url": "https://github.com/ericsaboia"
-		},
-		{
-			"name": "Rob Rodriguez",
-			"url": "https://github.com/rodriguise"
-		}
-	]
+  "name": "mongoose-validator",
+  "description": "Validators for mongoose models utilising validator.js",
+  "version": "2.0.0",
+  "author": {
+    "name": "Lee Powell",
+    "email": "lee@leepowell.co.uk",
+    "url": "https://leepowell.co.uk"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/leepowellcouk/mongoose-validator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/leepowellcouk/mongoose-validator/issues"
+  },
+  "license": "MIT",
+  "main": "./lib/mongoose-validator",
+  "scripts": {
+    "test": "mocha -R list",
+    "preversion": "npm test",
+    "postversion": "git push && git push --tags",
+    "docs": "jsdoc lib/mongoose-validator.js -d ./docs/",
+    "lint": "eslint lib test",
+    "lint:fix": "npm run lint -- --fix",
+    "format": "prettier --write \"{lib,test}/**/*.js\" && npm run lint:fix"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run format && npm test"
+    }
+  },
+  "eslintConfig": {
+    "extends": [
+      "standard"
+    ]
+  },
+  "engines": {
+    "node": "*"
+  },
+  "keywords": [
+    "mongoose",
+    "validate",
+    "validation",
+    "models",
+    "schema"
+  ],
+  "dependencies": {
+    "is": "^3.2.1",
+    "validator": "^9.4.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.17.0",
+    "eslint-config-standard": "^11.0.0-beta.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "husky": "^0.14.3",
+    "jsdoc": "^3.4.3",
+    "mocha": "^3.4.1",
+    "mongoose": "^4.10.0",
+    "prettier": "^1.10.2",
+    "should": "^11.2.1"
+  },
+  "contributors": [
+    {
+      "name": "Francesco Pasqua",
+      "url": "https://github.com/cesconix/"
+    },
+    {
+      "name": "Igor Escobar",
+      "url": "https://github.com/igorescobar/"
+    },
+    {
+      "name": "Todd Bluhm",
+      "url": "https://github.com/toddbluhm/"
+    },
+    {
+      "name": "Subash Pathak",
+      "url": "https://github.com/subash/"
+    },
+    {
+      "name": "Kristijan Sedlak",
+      "url": "https://github.com/xpepermint"
+    },
+    {
+      "name": "Eric Saboia",
+      "url": "https://github.com/ericsaboia"
+    },
+    {
+      "name": "Rob Rodriguez",
+      "url": "https://github.com/rodriguise"
+    }
+  ]
 }
