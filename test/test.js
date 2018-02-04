@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-(function () {
+;(function () {
   const mongoose = require('mongoose')
   const should = require('should')
   const validate = require('..')
@@ -82,9 +82,15 @@
     })
 
     after(done => {
-      mongoose.connection.db.dropDatabase()
-      mongoose.disconnect()
-      done()
+      mongoose.connection.db
+        .dropDatabase()
+        .catch(err => {
+          console.dir(err)
+        })
+        .then(() => {
+          mongoose.disconnect()
+          done()
+        })
     })
 
     beforeEach(done => {
