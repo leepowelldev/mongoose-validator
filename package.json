@@ -18,8 +18,6 @@
   "main": "./lib/mongoose-validator",
   "scripts": {
     "test": "mocha -R list",
-    "preversion": "npm test",
-    "postversion": "git push && git push --tags",
     "docs": "jsdoc lib/mongoose-validator.js -d ./docs/",
     "lint": "eslint lib test",
     "lint:fix": "npm run lint -- --fix",
@@ -58,10 +56,10 @@
     "eslint-plugin-standard": "^3.0.1",
     "husky": "^0.14.3",
     "jsdoc": "^3.4.3",
-    "mocha": "^3.4.1",
-    "mongoose": "^4.10.0",
+    "mocha": "^5.0.0",
+    "mongoose": "^5.0.3",
     "prettier": "^1.10.2",
-    "should": "^11.2.1"
+    "should": "^13.2.1"
   },
   "contributors": [
     {
