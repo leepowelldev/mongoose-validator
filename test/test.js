@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-;(function () {
+;(function() {
   const mongoose = require('mongoose')
   const should = require('should')
   const validate = require('..')
@@ -14,7 +14,7 @@
   // ------------------------------------------------------------
   extend(
     'isType',
-    function isType (val, type) {
+    function isType(val, type) {
       // eslint-disable-next-line valid-typeof
       return typeof val === type
     },
@@ -23,7 +23,7 @@
 
   extend(
     'notEmpty',
-    function notEmpty (val) {
+    function notEmpty(val) {
       return !val.match(/^[\s\t\r\n]*$/)
     },
     'Empty'
@@ -31,7 +31,7 @@
 
   extend(
     'isArray',
-    function isArray (val) {
+    function isArray(val) {
       return Array.isArray(val)
     },
     'Not an array'
@@ -39,7 +39,7 @@
 
   extend(
     'isContextEqlModelInstance',
-    function isContextEqlModelInstance (val) {
+    function isContextEqlModelInstance(val) {
       return this._id && this.name === val
     },
     'This is not a model instance'
@@ -47,7 +47,7 @@
 
   extend(
     'asyncIsTypeValidator',
-    function asyncIsTypeValidator (val, type) {
+    function asyncIsTypeValidator(val, type) {
       // eslint-disable-next-line valid-typeof
       return Promise.resolve(typeof val === type)
     },
@@ -120,7 +120,7 @@
           validator: 'isLength',
           arguments: [5, 10],
           message: 'Not valid length',
-          http: 403
+          http: 403,
         })
 
         validator.should.have.property('validator')
@@ -139,11 +139,11 @@
 
       it('Should throw error if validator option is not defined', done => {
         should.throws(
-          function () {
+          function() {
             // eslint-disable-next-line no-unused-vars
             const validator = validate({})
           },
-          function (err) {
+          function(err) {
             return (
               err instanceof Error &&
               err.message === 'validator option undefined'
@@ -156,13 +156,13 @@
 
       it('Should throw error if validator option is not valid type', done => {
         should.throws(
-          function () {
+          function() {
             // eslint-disable-next-line no-unused-vars
             const validator = validate({
-              validator: []
+              validator: [],
             })
           },
-          function (err) {
+          function(err) {
             return (
               err instanceof Error &&
               err.message ===
@@ -176,13 +176,13 @@
 
       it('Should throw error if validator option does not resolve a validator that exists', done => {
         should.throws(
-          function () {
+          function() {
             // eslint-disable-next-line no-unused-vars
             const validator = validate({
-              validator: 'foo'
+              validator: 'foo',
             })
           },
-          function (err) {
+          function(err) {
             return (
               err instanceof Error &&
               err.message ===
@@ -198,7 +198,7 @@
     describe('Creating custom validators (extend method) -', () => {
       it('Should create a custom validator', done => {
         should.doesNotThrow(() => {
-          extend('isString', function (val) {
+          extend('isString', function(val) {
             return typeof val === 'string'
           })
         })
@@ -207,12 +207,12 @@
 
       it('Should throw error if a validator already exists', done => {
         should.throws(
-          function () {
-            extend('isString', function (val) {
+          function() {
+            extend('isString', function(val) {
               return typeof val === 'string'
             })
           },
-          function (err) {
+          function(err) {
             return (
               err instanceof Error &&
               err.message === 'validator `isString` already exists'
@@ -224,12 +224,12 @@
 
       it('Should throw error if name not a string', done => {
         should.throws(
-          function () {
-            extend(['isString2'], function (val) {
+          function() {
+            extend(['isString2'], function(val) {
               return typeof val === 'string'
             })
           },
-          function (err) {
+          function(err) {
             return (
               err instanceof Error &&
               err.message === 'name must be a string, received object'
@@ -241,12 +241,12 @@
 
       it('Should throw error if name not provided', done => {
         should.throws(
-          function () {
-            extend(function (val) {
+          function() {
+            extend(function(val) {
               return typeof val === 'string'
             })
           },
-          function (err) {
+          function(err) {
             return (
               err instanceof Error &&
               err.message === 'name must be a string, received function'
@@ -258,12 +258,12 @@
 
       it('Should throw error if name is empty', done => {
         should.throws(
-          function () {
-            extend('', function (val) {
+          function() {
+            extend('', function(val) {
               return typeof val === 'string'
             })
           },
-          function (err) {
+          function(err) {
             return err instanceof Error && err.message === 'name is required'
           }
         )
@@ -272,10 +272,10 @@
 
       it('Should throw error if validator is not a function', done => {
         should.throws(
-          function () {
+          function() {
             extend('isString', null)
           },
-          function (err) {
+          function(err) {
             return (
               err instanceof Error &&
               err.message === 'validator must be a function, received object'
@@ -287,16 +287,16 @@
 
       it('Should throw error if message is not a string', done => {
         should.throws(
-          function () {
+          function() {
             extend(
               'isString',
-              function (val) {
+              function(val) {
                 return typeof val === 'string'
               },
               ['message']
             )
           },
-          function (err) {
+          function(err) {
             return (
               err instanceof Error &&
               err.message === 'message must be a string, received object'
@@ -311,7 +311,7 @@
       it('Should pass a validator', done => {
         const validator = validate({
           validator: 'isLength',
-          arguments: [5, 10]
+          arguments: [5, 10],
         })
 
         schema.path('name').validate(validator)
@@ -331,7 +331,7 @@
       it('Should fail a validator', done => {
         const validator = validate({
           validator: 'isLength',
-          arguments: [5, 10]
+          arguments: [5, 10],
         })
 
         schema.path('name').validate(validator)
@@ -357,7 +357,7 @@
         const validator = validate({
           validator: 'isLength',
           arguments: [5, 10],
-          passIfEmpty: true
+          passIfEmpty: true,
         })
 
         schema.path('name').validate(validator)
@@ -377,7 +377,7 @@
         const validator = validate({
           validator: 'isLength',
           arguments: [5, 10],
-          passIfEmpty: true
+          passIfEmpty: true,
         })
 
         schema.path('name').validate(validator)
@@ -402,7 +402,7 @@
       it('Should use default message', done => {
         const validator = validate({
           validator: 'isLength',
-          arguments: [5, 10]
+          arguments: [5, 10],
         })
 
         schema.path('name').validate(validator)
@@ -429,7 +429,7 @@
         const validator = validate({
           validator: 'isLength',
           arguments: [5, 10],
-          message: 'Custom error message'
+          message: 'Custom error message',
         })
 
         schema.path('name').validate(validator)
@@ -452,9 +452,9 @@
 
       it('Should use default `Error` message when nothing else exists', done => {
         const validator = validate({
-          validator: function () {
+          validator: function() {
             return false
-          }
+          },
         })
 
         schema.path('name').validate(validator)
@@ -480,7 +480,7 @@
           validator: 'isLength',
           arguments: [5, 10],
           http: 403,
-          message: 'Error {HTTP}: Something bad happened'
+          message: 'Error {HTTP}: Something bad happened',
         })
 
         schema.path('name').validate(validator)
@@ -507,7 +507,7 @@
         const validator = validate({
           validator: 'isLength',
           arguments: [5, 10],
-          message: 'At least {ARGS[0]} and less than {ARGS[1]}'
+          message: 'At least {ARGS[0]} and less than {ARGS[1]}',
         })
 
         schema.path('name').validate(validator)
@@ -537,7 +537,7 @@
         const validator = validate({
           validator: 'isLength',
           arguments: [5, 10],
-          http: 403
+          http: 403,
         })
 
         schema.path('name').validate(validator)
@@ -565,7 +565,7 @@
       it('Should use a custom validator and pass', done => {
         const validator = validate({
           validator: 'isType',
-          arguments: 'string'
+          arguments: 'string',
         })
 
         schema.path('name').validate(validator)
@@ -584,7 +584,7 @@
       it('Should use a custom validator and fail', done => {
         const validator = validate({
           validator: 'isType',
-          arguments: 'boolean'
+          arguments: 'boolean',
         })
 
         schema.path('name').validate(validator)
@@ -609,7 +609,7 @@
         const validator = validate({
           validator: 'isType',
           arguments: 'boolean',
-          message: 'Custom error message'
+          message: 'Custom error message',
         })
 
         schema.path('name').validate(validator)
@@ -633,7 +633,7 @@
       it('Should use a custom async validator and pass', done => {
         const validator = validate({
           validator: 'asyncIsTypeValidator',
-          arguments: 'string'
+          arguments: 'string',
         })
 
         schema.path('name').validate(validator)
@@ -652,7 +652,7 @@
       it('Should use a custom async validator and fail', done => {
         const validator = validate({
           validator: 'asyncIsTypeValidator',
-          arguments: 'boolean'
+          arguments: 'boolean',
         })
 
         schema.path('name').validate(validator)
@@ -677,10 +677,10 @@
     describe('Passing functions directly -', () => {
       it('Should pass custom validator when a function is passed directly', done => {
         const validator = validate({
-          validator: function (val) {
+          validator: function(val) {
             return val > 18
           },
-          message: 'Age must be greater than 18'
+          message: 'Age must be greater than 18',
         })
 
         schema.path('age').validate(validator)
@@ -699,10 +699,10 @@
 
       it('Should fail custom validator when a function is passed directly', done => {
         const validator = validate({
-          validator: function (val) {
+          validator: function(val) {
             return val > 18
           },
-          message: 'Age must be greater than 18'
+          message: 'Age must be greater than 18',
         })
 
         schema.path('age').validate(validator)
@@ -727,10 +727,10 @@
     describe('Update validators -', () => {
       it('Should pass validation on a mongoose update', done => {
         const validator = validate({
-          validator: function (val) {
+          validator: function(val) {
             return val > 18
           },
-          message: 'Age must be greater than 18'
+          message: 'Age must be greater than 18',
         })
 
         const opts = { runValidators: true }
@@ -754,10 +754,10 @@
 
       it('Should fail validation on a mongoose update', done => {
         const validator = validate({
-          validator: function (val) {
+          validator: function(val) {
             return val > 18
           },
-          message: 'Age must be greater than 18'
+          message: 'Age must be greater than 18',
         })
 
         const opts = { runValidators: true }
@@ -786,10 +786,10 @@
 
       it('Should fail validation on a mongoose update', done => {
         const validator = validate({
-          validator: function (val) {
+          validator: function(val) {
             return val > 18
           },
-          message: 'Age must be greater than 18'
+          message: 'Age must be greater than 18',
         })
 
         const opts = { runValidators: true }
@@ -821,7 +821,7 @@
       // https://github.com/leepowellcouk/mongoose-validator/issues/7#issuecomment-20494299
       it('Should pass on legacy isEmail method', done => {
         const validator = validate({
-          validator: 'isEmail'
+          validator: 'isEmail',
         })
 
         schema.path('name').validate(validator)
@@ -839,7 +839,7 @@
 
       it('Should pass custom validator using non-string value', done => {
         const validator = validate({
-          validator: 'isArray'
+          validator: 'isArray',
         })
 
         schema.path('interests').validate(validator)
@@ -861,18 +861,18 @@
       it('Issue #12', done => {
         const validator1 = validate({
           validator: 'notEmpty',
-          message: 'Username should not be empty'
+          message: 'Username should not be empty',
         })
 
         const validator2 = validate({
           validator: 'isLength',
           arguments: [4, 40],
-          message: 'Username should be between 4 and 40 characters'
+          message: 'Username should be between 4 and 40 characters',
         })
 
         const validator3 = validate({
           validator: 'isAlphanumeric',
-          message: 'Username must only contain letters and digits'
+          message: 'Username must only contain letters and digits',
         })
 
         schema
@@ -895,7 +895,7 @@
 
       it('Custom validator calls with this = model instance', done => {
         const validator = validate({
-          validator: 'isContextEqlModelInstance'
+          validator: 'isContextEqlModelInstance',
         })
 
         schema.path('name').validate(validator)

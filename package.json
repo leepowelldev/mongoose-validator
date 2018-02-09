@@ -20,8 +20,7 @@
     "test": "mocha -R list",
     "docs": "jsdoc lib/mongoose-validator.js -d ./docs/",
     "lint": "eslint lib test",
-    "lint:fix": "npm run lint -- --fix",
-    "format": "prettier --write \"{lib,test}/**/*.js\" && npm run lint:fix"
+    "format": "prettier --write \"{lib,test}/**/*.js\""
   },
   "husky": {
     "hooks": {
@@ -30,8 +29,19 @@
   },
   "eslintConfig": {
     "extends": [
-      "standard"
+      "standard",
+      "prettier",
+      "prettier/standard"
+    ],
+    "plugins": [
+      "standard",
+      "prettier"
     ]
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "es5"
   },
   "engines": {
     "node": "*"
@@ -49,9 +59,11 @@
   },
   "devDependencies": {
     "eslint": "^4.17.0",
+    "eslint-config-prettier": "^2.9.0",
     "eslint-config-standard": "^11.0.0-beta.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-prettier": "^2.6.0",
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1",
     "husky": "^0.14.3",
