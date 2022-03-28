@@ -1,6 +1,6 @@
 # Mongoose Validator
 
-[![Build Status](https://travis-ci.org/leepowellcouk/mongoose-validator.svg?branch=master)](https://travis-ci.org/leepowellcouk/mongoose-validator)
+[![Test](https://github.com/leepowelldev/mongoose-validator/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/leepowelldev/mongoose-validator/actions/workflows/test.yml)
 
 Validators for [Mongoose](http://mongoosejs.com) schemas utilising [validator.js](https://github.com/chriso/validator.js).
 
