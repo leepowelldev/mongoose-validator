@@ -1,6 +1,6 @@
 # Mongoose Validator
 
-[![Build Status](https://travis-ci.org/leepowellcouk/mongoose-validator.svg?branch=master)](https://travis-ci.org/leepowellcouk/mongoose-validator)
+[![Test](https://github.com/leepowelldev/mongoose-validator/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/leepowelldev/mongoose-validator/actions/workflows/test.yml)
 
 Validators for [Mongoose](http://mongoosejs.com) schemas utilising [validator.js](https://github.com/chriso/validator.js).
 
@@ -8,7 +8,7 @@ Mongoose Validator simply returns Mongoose style validation objects that utilise
 
 Version 1.0.x has been refactored to support a simpler interface and also validator.js 3.0.x
 
-**NOTE**: If you were using 0.2.x with your projects please be aware that upgrading to 1.0.x will break them. As of validator.js 3.0.x - many of the avilable validators have been changed. For example, 'regex' validator no longer exists and has been replaced with 'matches'.
+**NOTE**: If you were using 0.2.x with your projects please be aware that upgrading to 1.0.x will break them. As of validator.js 3.0.x - many of the available validators have been changed. For example, 'regex' validator no longer exists and has been replaced with 'matches'.
 
 ## Installation
 
@@ -29,8 +29,8 @@ More details on 0.2.2 can be found [here](https://github.com/leepowellcouk/mongo
 ## Usage
 
 ```javascript
-var mongoose = require('mongoose')
-var validate = require('mongoose-validator')
+var mongoose = require('mongoose');
+var validate = require('mongoose-validator');
 
 var nameValidator = [
   validate({
@@ -43,11 +43,11 @@ var nameValidator = [
     passIfEmpty: true,
     message: 'Name should contain alpha-numeric characters only',
   }),
-]
+];
 
 var Schema = new mongoose.Schema({
   name: { type: String, required: true, validate: nameValidator },
-})
+});
 ```
 
 Error objects are returned as normal via Mongoose.
@@ -96,7 +96,7 @@ var alphaValidator = validate({
   passIfEmpty: true,
   message: 'Name should contain alpha-numeric characters only',
   httpStatus: 400,
-})
+});
 ```
 
 In this example the error object returned by mongoose will have its 'properties' extended with httpStatus should validation fail. More details can be found about this here: [http://thecodebarbarian.com/2014/12/19/mongoose-397](http://thecodebarbarian.com/2014/12/19/mongoose-397)
@@ -107,15 +107,15 @@ By default Mongoose runs all validators synchronously, if you need to perform as
 
 ```javascript
 validate({
-  validator: function(val) {
+  validator: function (val) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        resolve(val > 0)
-      }, 500)
-    })
+        resolve(val > 0);
+      }, 500);
+    });
   },
   message: 'Count must be a positive number.',
-})
+});
 ```
 
 ## Custom validators
@@ -126,15 +126,15 @@ Custom validators can also be added - these are then added to the validator.js o
 ```javascript
 // extend([method name], [validator], [default error message])
 
-var extend = require('mongoose-validator').extend
+var extend = require('mongoose-validator').extend;
 
 extend(
   'isString',
-  function(val) {
-    return Object.prototype.toString.call(val) === '[object String]'
+  function (val) {
+    return Object.prototype.toString.call(val) === '[object String]';
   },
   'Not a string'
-)
+);
 ```
 
 Custom validators are called normally:
@@ -142,18 +142,18 @@ Custom validators are called normally:
 ```javascript
 validate({
   validator: 'isString',
-})
+});
 ```
 
 Custom validator can be passed directly as a function:
 
 ```javascript
 validate({
-  validator: function(val) {
-    return val > 0
+  validator: function (val) {
+    return val > 0;
   },
   message: 'Count must be a positive number.',
-})
+});
 ```
 
 NOTE: As per validator.js documentation, the currently tested value is accessed through the first argument that is automatically passed to the validator function.
@@ -166,7 +166,7 @@ Mongoose Validator can use the validator.js `matches` method, however, it's wort
 validate({
   validator: 'matches',
   arguments: /^[a-zA-Z\-]+$/i,
-})
+});
 ```
 
 or as a string with a further argument containing any required modifiers:
@@ -175,7 +175,7 @@ or as a string with a further argument containing any required modifiers:
 validate({
   validator: 'matches',
   arguments: ['^[a-zA-Z-]+$', 'i'],
-})
+});
 ```
 
 ## Contributors
@@ -184,7 +184,7 @@ Special thanks to [Francesco Pasqua](https://github.com/cesconix/) for heavily r
 
 ## License (MIT)
 
-Copyright (c) 2015 Lee Powell <mailto:lee@leepowell.co.uk>
+Copyright (c) 2015 Lee Powell <lee@leepowell.co.uk>
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

@@ -1,12 +1,15 @@
 {
   "name": "mongoose-validator",
   "description": "Validators for mongoose models utilising validator.js",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "author": {
     "name": "Lee Powell",
-    "email": "lee@leepowell.co.uk",
-    "url": "https://leepowell.co.uk"
+    "email": "lee@leepowell.dev",
+    "url": "https://leepowell.dev"
   },
+  "files": [
+    "lib"
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/leepowellcouk/mongoose-validator.git"
@@ -18,30 +21,10 @@
   "main": "./lib/mongoose-validator",
   "scripts": {
     "test": "mocha -R list",
-    "docs": "jsdoc lib/mongoose-validator.js -d ./docs/",
     "lint": "eslint lib test",
-    "format": "prettier --write \"{lib,test}/**/*.js\""
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run format && npm test"
-    }
-  },
-  "eslintConfig": {
-    "extends": [
-      "standard",
-      "prettier",
-      "prettier/standard"
-    ],
-    "plugins": [
-      "standard",
-      "prettier"
-    ]
-  },
-  "prettier": {
-    "semi": false,
-    "singleQuote": true,
-    "trailingComma": "es5"
+    "format": "prettier --ignore-unknown --write .",
+    "format:ci": "prettier --ignore-unknown --check .",
+    "prepare": "husky install"
   },
   "engines": {
     "node": "*"
@@ -54,24 +37,24 @@
     "schema"
   ],
   "dependencies": {
-    "is": "^3.2.1",
-    "validator": "^10.4.0"
+    "is": "^3.3.0"
+  },
+  "peerDependencies": {
+    "validator": ">=13"
   },
   "devDependencies": {
-    "eslint": "^5.2.0",
-    "eslint-config-prettier": "^2.9.0",
-    "eslint-config-standard": "^11.0.0-beta.0",
-    "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-node": "^7.0.1",
-    "eslint-plugin-prettier": "^2.6.0",
-    "eslint-plugin-promise": "^3.6.0",
-    "eslint-plugin-standard": "^3.0.1",
-    "husky": "^0.14.3",
-    "jsdoc": "^3.4.3",
-    "mocha": "^5.0.0",
-    "mongoose": "^5.0.3",
-    "prettier": "^1.10.2",
-    "should": "^13.2.1"
+    "eslint": "^7.12.1",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-promise": "^5.0.0",
+    "mocha": "^9.2.2",
+    "mongoose": "^6.2.8",
+    "prettier": "^2.2.0",
+    "should": "^13.2.3",
+    "husky": "^7.0.0"
   },
   "contributors": [
     {

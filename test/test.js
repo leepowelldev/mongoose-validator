@@ -1,14 +1,14 @@
 /* eslint-env mocha */
-;(function() {
-  const mongoose = require('mongoose')
-  const should = require('should')
-  const validate = require('..')
-  const extend = validate.extend
-  const Schema = mongoose.Schema
+(function () {
+  const mongoose = require('mongoose');
+  const should = require('should');
+  const validate = require('..');
+  const extend = validate.extend;
+  const { Schema } = mongoose;
 
   // https://github.com/Automattic/mongoose/issues/4291
   // http://mongoosejs.com/docs/promises.html
-  mongoose.Promise = Promise
+  mongoose.Promise = Promise;
 
   // Create a custom validator using 'extend' method
   // ------------------------------------------------------------
@@ -16,900 +16,909 @@
     'isType',
     function isType(val, type) {
       // eslint-disable-next-line valid-typeof
-      return typeof val === type
+      return typeof val === type;
     },
     'Not correct type'
-  )
+  );
 
   extend(
     'notEmpty',
     function notEmpty(val) {
-      return !val.match(/^[\s\t\r\n]*$/)
+      return !val.match(/^[\s\t\r\n]*$/);
     },
     'Empty'
-  )
+  );
 
   extend(
     'isArray',
     function isArray(val) {
-      return Array.isArray(val)
+      return Array.isArray(val);
     },
     'Not an array'
-  )
+  );
 
   extend(
     'isContextEqlModelInstance',
     function isContextEqlModelInstance(val) {
-      return this._id && this.name === val
+      return this._id && this.name === val;
     },
     'This is not a model instance'
-  )
+  );
 
   extend(
     'asyncIsTypeValidator',
     function asyncIsTypeValidator(val, type) {
       // eslint-disable-next-line valid-typeof
-      return Promise.resolve(typeof val === type)
+      return Promise.resolve(typeof val === type);
     },
     'Not correct type'
-  )
+  );
 
   // Tests
   // ------------------------------------------------------------
   describe('Mongoose Validator:', () => {
-    let doc, schema, Person
+    let doc, schema, Person;
 
-    // Mongo environment variables are provided by the official Docker Mongo image
-    const mongoAddr = process.env.MONGO_PORT_27017_TCP_ADDR || '127.0.0.1'
-    const mongoPort = process.env.MONGO_PORT_27017_TCP_PORT || '27017'
+    before((done) => {
+      const url = 'mongodb://localhost:27017/mongoose_validator_test';
+      const date = Date.now();
 
-    before(done => {
-      const url = `mongodb://${mongoAddr}:${mongoPort}/mongoose_validator_test`
-      const date = Date.now()
+      const name = { type: String, default: null };
+      const interests = { type: Array, default: [] };
+      const age = { type: Number, default: null };
+      const dateCreated = { type: Date, default: date };
 
-      const name = { type: String, default: null }
-      const interests = { type: Array, default: [] }
-      const age = { type: Number, default: null }
-      const dateCreated = { type: Date, default: date }
+      mongoose.connect(url, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        user: 'root',
+        pass: 'example',
+        authSource: 'admin',
+      });
 
-      mongoose.connect(url)
+      schema = new Schema({ name, interests, age, dateCreated });
 
-      schema = new Schema({ name, interests, age, dateCreated })
+      Person = mongoose.model('Person', schema, 'test.people');
 
-      Person = mongoose.model('Person', schema, 'test.people')
+      const db = mongoose.connection;
+      db.on('error', console.error.bind(console, 'connection error:'));
 
-      done()
-    })
+      db.once('open', function () {
+        done();
+      });
 
-    after(done => {
+      // done();
+    });
+
+    after((done) => {
       mongoose.connection.db
         .dropDatabase()
-        .catch(err => {
-          console.dir(err)
+        .catch((err) => {
+          console.dir(err);
         })
         .then(() => {
-          mongoose.disconnect()
-          done()
-        })
-    })
+          mongoose.disconnect();
+          done();
+        });
+    });
 
-    beforeEach(done => {
+    beforeEach((done) => {
       Person.create({}, (err, document) => {
-        if (err) return done(err)
-        if (!document) return done(new Error('No document found'))
-        doc = document
-        return done()
-      })
-    })
+        if (err) return done(err);
+        if (!document) return done(new Error('No document found'));
+        doc = document;
+        return done();
+      });
+    });
 
-    afterEach(done => {
+    afterEach((done) => {
       // Remove the attached validators from tests
-      schema.paths.name.validators = []
-      schema.paths.interests.validators = []
-      schema.paths.age.validators = []
+      schema.paths.name.validators = [];
+      schema.paths.interests.validators = [];
+      schema.paths.age.validators = [];
 
-      Person.remove({}, err => {
-        if (err) return done(err)
-        return done()
-      })
-    })
+      Person.remove({}, (err) => {
+        if (err) return done(err);
+        return done();
+      });
+    });
 
     describe('Creating mongoose validators -', () => {
-      it('Should create a validator', done => {
+      it('Should create a validator', (done) => {
         const validator = validate({
           validator: 'isLength',
           arguments: [5, 10],
           message: 'Not valid length',
           http: 403,
-        })
+        });
 
-        validator.should.have.property('validator')
-        validator.should.have.property('message')
-        validator.should.have.property('http')
+        validator.should.have.property('validator');
+        validator.should.have.property('message');
+        validator.should.have.property('http');
 
-        validator.message.should.equal('Not valid length')
-        validator.message.should.be.type('string')
+        validator.message.should.equal('Not valid length');
+        validator.message.should.be.type('string');
 
-        validator.validator.should.be.type('function')
+        validator.validator.should.be.type('function');
 
-        validator.http.should.equal(403)
+        validator.http.should.equal(403);
 
-        return done()
-      })
+        return done();
+      });
 
-      it('Should throw error if validator option is not defined', done => {
+      it('Should throw error if validator option is not defined', (done) => {
         should.throws(
-          function() {
+          function () {
             // eslint-disable-next-line no-unused-vars
-            const validator = validate({})
+            const validator = validate({});
           },
-          function(err) {
+          function (err) {
             return (
               err instanceof Error &&
               err.message === 'validator option undefined'
-            )
+            );
           }
-        )
+        );
 
-        return done()
-      })
+        return done();
+      });
 
-      it('Should throw error if validator option is not valid type', done => {
+      it('Should throw error if validator option is not valid type', (done) => {
         should.throws(
-          function() {
+          function () {
             // eslint-disable-next-line no-unused-vars
             const validator = validate({
               validator: [],
-            })
+            });
           },
-          function(err) {
+          function (err) {
             return (
               err instanceof Error &&
               err.message ===
                 'validator must be of type function or string, received object'
-            )
+            );
           }
-        )
+        );
 
-        return done()
-      })
+        return done();
+      });
 
-      it('Should throw error if validator option does not resolve a validator that exists', done => {
+      it('Should throw error if validator option does not resolve a validator that exists', (done) => {
         should.throws(
-          function() {
+          function () {
             // eslint-disable-next-line no-unused-vars
             const validator = validate({
               validator: 'foo',
-            })
+            });
           },
-          function(err) {
+          function (err) {
             return (
               err instanceof Error &&
               err.message ===
                 'validator `foo` does not exist in validator.js or as a custom validator'
-            )
+            );
           }
-        )
+        );
 
-        return done()
-      })
-    })
+        return done();
+      });
+    });
 
     describe('Creating custom validators (extend method) -', () => {
-      it('Should create a custom validator', done => {
+      it('Should create a custom validator', (done) => {
         should.doesNotThrow(() => {
-          extend('isString', function(val) {
-            return typeof val === 'string'
-          })
-        })
-        return done()
-      })
+          extend('isString', function (val) {
+            return typeof val === 'string';
+          });
+        });
+        return done();
+      });
 
-      it('Should throw error if a validator already exists', done => {
+      it('Should throw error if a validator already exists', (done) => {
         should.throws(
-          function() {
-            extend('isString', function(val) {
-              return typeof val === 'string'
-            })
+          function () {
+            extend('isString', function (val) {
+              return typeof val === 'string';
+            });
           },
-          function(err) {
+          function (err) {
             return (
               err instanceof Error &&
               err.message === 'validator `isString` already exists'
-            )
+            );
           }
-        )
-        return done()
-      })
+        );
+        return done();
+      });
 
-      it('Should throw error if name not a string', done => {
+      it('Should throw error if name not a string', (done) => {
         should.throws(
-          function() {
-            extend(['isString2'], function(val) {
-              return typeof val === 'string'
-            })
+          function () {
+            extend(['isString2'], function (val) {
+              return typeof val === 'string';
+            });
           },
-          function(err) {
+          function (err) {
             return (
               err instanceof Error &&
               err.message === 'name must be a string, received object'
-            )
+            );
           }
-        )
-        return done()
-      })
+        );
+        return done();
+      });
 
-      it('Should throw error if name not provided', done => {
+      it('Should throw error if name not provided', (done) => {
         should.throws(
-          function() {
-            extend(function(val) {
-              return typeof val === 'string'
-            })
+          function () {
+            extend(function (val) {
+              return typeof val === 'string';
+            });
           },
-          function(err) {
+          function (err) {
             return (
               err instanceof Error &&
               err.message === 'name must be a string, received function'
-            )
+            );
           }
-        )
-        return done()
-      })
+        );
+        return done();
+      });
 
-      it('Should throw error if name is empty', done => {
+      it('Should throw error if name is empty', (done) => {
         should.throws(
-          function() {
-            extend('', function(val) {
-              return typeof val === 'string'
-            })
+          function () {
+            extend('', function (val) {
+              return typeof val === 'string';
+            });
           },
-          function(err) {
-            return err instanceof Error && err.message === 'name is required'
+          function (err) {
+            return err instanceof Error && err.message === 'name is required';
           }
-        )
-        return done()
-      })
+        );
+        return done();
+      });
 
-      it('Should throw error if validator is not a function', done => {
+      it('Should throw error if validator is not a function', (done) => {
         should.throws(
-          function() {
-            extend('isString', null)
+          function () {
+            extend('isString', null);
           },
-          function(err) {
+          function (err) {
             return (
               err instanceof Error &&
               err.message === 'validator must be a function, received object'
-            )
+            );
           }
-        )
-        return done()
-      })
+        );
+        return done();
+      });
 
-      it('Should throw error if message is not a string', done => {
+      it('Should throw error if message is not a string', (done) => {
         should.throws(
-          function() {
+          function () {
             extend(
               'isString',
-              function(val) {
-                return typeof val === 'string'
+              function (val) {
+                return typeof val === 'string';
               },
               ['message']
-            )
+            );
           },
-          function(err) {
+          function (err) {
             return (
               err instanceof Error &&
               err.message === 'message must be a string, received object'
-            )
+            );
           }
-        )
-        return done()
-      })
-    })
+        );
+        return done();
+      });
+    });
 
     describe('General validation -', () => {
-      it('Should pass a validator', done => {
+      it('Should pass a validator', (done) => {
         const validator = validate({
           validator: 'isLength',
           arguments: [5, 10],
-        })
+        });
 
-        schema.path('name').validate(validator)
+        schema.path('name').validate(validator);
 
-        should.exist(doc)
+        should.exist(doc);
 
-        doc.name = 'Jonathan'
+        doc.name = 'Jonathan';
 
         doc.save((err, person) => {
-          should.not.exist(err)
-          should.exist(person)
-          person.should.have.property('name', 'Jonathan')
-          return done()
-        })
-      })
+          should.not.exist(err);
+          should.exist(person);
+          person.should.have.property('name', 'Jonathan');
+          return done();
+        });
+      });
 
-      it('Should fail a validator', done => {
+      it('Should fail a validator', (done) => {
         const validator = validate({
           validator: 'isLength',
           arguments: [5, 10],
-        })
+        });
 
-        schema.path('name').validate(validator)
+        schema.path('name').validate(validator);
 
-        should.exist(doc)
+        should.exist(doc);
 
-        doc.name = 'Joe'
+        doc.name = 'Joe';
 
         doc.save((err, person) => {
-          should.exist(err)
-          should.not.exist(person)
+          should.exist(err);
+          should.not.exist(person);
           err.should.be
             .instanceof(Error)
-            .and.have.property('name', 'ValidationError')
-          err.errors.name.should.have.property('path', 'name')
-          return done()
-        })
-      })
-    })
+            .and.have.property('name', 'ValidationError');
+          err.errors.name.should.have.property('path', 'name');
+          return done();
+        });
+      });
+    });
 
     describe('passIfEmpty validation -', () => {
-      it('Should pass a passIfEmpty validator', done => {
+      it('Should pass a passIfEmpty validator', (done) => {
         const validator = validate({
           validator: 'isLength',
           arguments: [5, 10],
           passIfEmpty: true,
-        })
+        });
 
-        schema.path('name').validate(validator)
+        schema.path('name').validate(validator);
 
-        should.exist(doc)
+        should.exist(doc);
 
-        doc.name = undefined
+        doc.name = undefined;
 
         doc.save((err, person) => {
-          should.not.exist(err)
-          should.exist(person)
-          return done()
-        })
-      })
+          should.not.exist(err);
+          should.exist(person);
+          return done();
+        });
+      });
 
-      it('Should fail a passIfEmpty validator', done => {
+      it('Should fail a passIfEmpty validator', (done) => {
         const validator = validate({
           validator: 'isLength',
           arguments: [5, 10],
           passIfEmpty: true,
-        })
+        });
 
-        schema.path('name').validate(validator)
+        schema.path('name').validate(validator);
 
-        should.exist(doc)
+        should.exist(doc);
 
-        doc.name = 'Joe'
+        doc.name = 'Joe';
 
         doc.save((err, person) => {
-          should.exist(err)
-          should.not.exist(person)
+          should.exist(err);
+          should.not.exist(person);
           err.should.be
             .instanceof(Error)
-            .and.have.property('name', 'ValidationError')
-          err.errors.name.should.have.property('path', 'name')
-          return done()
-        })
-      })
-    })
+            .and.have.property('name', 'ValidationError');
+          err.errors.name.should.have.property('path', 'name');
+          return done();
+        });
+      });
+    });
 
     describe('Error messages -', () => {
-      it('Should use default message', done => {
+      it('Should use default message', (done) => {
         const validator = validate({
           validator: 'isLength',
           arguments: [5, 10],
-        })
+        });
 
-        schema.path('name').validate(validator)
+        schema.path('name').validate(validator);
 
-        should.exist(doc)
+        should.exist(doc);
 
-        doc.name = 'Joe'
+        doc.name = 'Joe';
 
         doc.save((err, person) => {
-          should.exist(err)
-          should.not.exist(person)
+          should.exist(err);
+          should.not.exist(person);
           err.should.be
             .instanceof(Error)
-            .and.have.property('name', 'ValidationError')
-          err.errors.name.should.have.property('path', 'name')
+            .and.have.property('name', 'ValidationError');
+          err.errors.name.should.have.property('path', 'name');
           err.errors.name.message.should.equal(
             validate.defaultErrorMessages.isLength
-          )
-          return done()
-        })
-      })
+          );
+          return done();
+        });
+      });
 
-      it('Should use custom message', done => {
+      it('Should use custom message', (done) => {
         const validator = validate({
           validator: 'isLength',
           arguments: [5, 10],
           message: 'Custom error message',
-        })
+        });
 
-        schema.path('name').validate(validator)
+        schema.path('name').validate(validator);
 
-        should.exist(doc)
+        should.exist(doc);
 
-        doc.name = 'Joe'
+        doc.name = 'Joe';
 
         doc.save((err, person) => {
-          should.exist(err)
-          should.not.exist(person)
+          should.exist(err);
+          should.not.exist(person);
           err.should.be
             .instanceof(Error)
-            .and.have.property('name', 'ValidationError')
-          err.errors.name.should.have.property('path', 'name')
-          err.errors.name.message.should.equal('Custom error message')
-          return done()
-        })
-      })
+            .and.have.property('name', 'ValidationError');
+          err.errors.name.should.have.property('path', 'name');
+          err.errors.name.message.should.equal('Custom error message');
+          return done();
+        });
+      });
 
-      it('Should use default `Error` message when nothing else exists', done => {
+      it('Should use default `Error` message when nothing else exists', (done) => {
         const validator = validate({
-          validator: function() {
-            return false
+          validator: function () {
+            return false;
           },
-        })
+        });
 
-        schema.path('name').validate(validator)
+        schema.path('name').validate(validator);
 
-        should.exist(doc)
+        should.exist(doc);
 
-        doc.name = 'Joe'
+        doc.name = 'Joe';
 
         doc.save((err, person) => {
-          should.exist(err)
-          should.not.exist(person)
+          should.exist(err);
+          should.not.exist(person);
           err.should.be
             .instanceof(Error)
-            .and.have.property('name', 'ValidationError')
-          err.errors.name.should.have.property('path', 'name')
-          err.errors.name.message.should.equal('Error')
-          return done()
-        })
-      })
+            .and.have.property('name', 'ValidationError');
+          err.errors.name.should.have.property('path', 'name');
+          err.errors.name.message.should.equal('Error');
+          return done();
+        });
+      });
 
-      it('Should replace properties on error message', done => {
+      it('Should replace properties on error message', (done) => {
         const validator = validate({
           validator: 'isLength',
           arguments: [5, 10],
           http: 403,
           message: 'Error {HTTP}: Something bad happened',
-        })
+        });
 
-        schema.path('name').validate(validator)
+        schema.path('name').validate(validator);
 
-        should.exist(doc)
+        should.exist(doc);
 
-        doc.name = 'Joe'
+        doc.name = 'Joe';
 
         doc.save((err, person) => {
-          should.exist(err)
-          should.not.exist(person)
+          should.exist(err);
+          should.not.exist(person);
           err.should.be
             .instanceof(Error)
-            .and.have.property('name', 'ValidationError')
-          err.errors.name.should.have.property('path', 'name')
+            .and.have.property('name', 'ValidationError');
+          err.errors.name.should.have.property('path', 'name');
           err.errors.name.message.should.equal(
             'Error 403: Something bad happened'
-          )
-          return done()
-        })
-      })
+          );
+          return done();
+        });
+      });
 
-      it('Should replace args on error message', done => {
+      it('Should replace args on error message', (done) => {
         const validator = validate({
           validator: 'isLength',
           arguments: [5, 10],
           message: 'At least {ARGS[0]} and less than {ARGS[1]}',
-        })
+        });
 
-        schema.path('name').validate(validator)
+        schema.path('name').validate(validator);
 
-        should.exist(doc)
+        should.exist(doc);
 
-        doc.name = 'Joe'
+        doc.name = 'Joe';
 
         doc.save((err, person) => {
-          should.exist(err)
-          should.not.exist(person)
+          should.exist(err);
+          should.not.exist(person);
           err.should.be
             .instanceof(Error)
-            .and.have.property('name', 'ValidationError')
-          err.errors.name.should.have.property('path', 'name')
-          err.errors.name.message.should.equal('At least 5 and less than 10')
-          return done()
-        })
-      })
-    })
+            .and.have.property('name', 'ValidationError');
+          err.errors.name.should.have.property('path', 'name');
+          err.errors.name.message.should.equal('At least 5 and less than 10');
+          return done();
+        });
+      });
+    });
 
     describe('Properties -', () => {
       // Support a custom property being added to the error object, only documentation I can find is from:
       // http://thecodebarbarian.com/2014/12/19/mongoose-397
       // In this case, `http` is a custom property and is passed across to the resulting error object
-      it('Should support a custom property', done => {
+      it('Should support a custom property', (done) => {
         const validator = validate({
           validator: 'isLength',
           arguments: [5, 10],
           http: 403,
-        })
+        });
 
-        schema.path('name').validate(validator)
+        schema.path('name').validate(validator);
 
-        should.exist(doc)
+        should.exist(doc);
 
-        doc.name = 'Joe'
+        doc.name = 'Joe';
 
         doc.save((err, person) => {
-          should.exist(err)
-          should.not.exist(person)
+          should.exist(err);
+          should.not.exist(person);
           err.should.be
             .instanceof(Error)
-            .and.have.property('name', 'ValidationError')
-          err.errors.name.should.have.property('properties')
+            .and.have.property('name', 'ValidationError');
+          err.errors.name.should.have.property('properties');
           err.errors.name.should.have
             .propertyByPath('properties', 'http')
-            .eql(403)
-          return done()
-        })
-      })
-    })
+            .eql(403);
+          return done();
+        });
+      });
+    });
 
     describe('Custom validators -', () => {
-      it('Should use a custom validator and pass', done => {
+      it('Should use a custom validator and pass', (done) => {
         const validator = validate({
           validator: 'isType',
           arguments: 'string',
-        })
+        });
 
-        schema.path('name').validate(validator)
+        schema.path('name').validate(validator);
 
-        should.exist(doc)
+        should.exist(doc);
 
-        doc.name = 'Joe'
+        doc.name = 'Joe';
 
         doc.save((err, person) => {
-          should.not.exist(err)
-          should.exist(person)
-          return done()
-        })
-      })
+          should.not.exist(err);
+          should.exist(person);
+          return done();
+        });
+      });
 
-      it('Should use a custom validator and fail', done => {
+      it('Should use a custom validator and fail', (done) => {
         const validator = validate({
           validator: 'isType',
           arguments: 'boolean',
-        })
+        });
 
-        schema.path('name').validate(validator)
+        schema.path('name').validate(validator);
 
-        should.exist(doc)
+        should.exist(doc);
 
-        doc.name = 'Joe'
+        doc.name = 'Joe';
 
         doc.save((err, person) => {
-          should.exist(err)
-          should.not.exist(person)
+          should.exist(err);
+          should.not.exist(person);
           err.should.be
             .instanceof(Error)
-            .and.have.property('name', 'ValidationError')
-          err.errors.name.should.have.property('path', 'name')
-          err.errors.name.message.should.equal('Not correct type')
-          return done()
-        })
-      })
+            .and.have.property('name', 'ValidationError');
+          err.errors.name.should.have.property('path', 'name');
+          err.errors.name.message.should.equal('Not correct type');
+          return done();
+        });
+      });
 
-      it('Should use a custom validator and fail with custom error message', done => {
+      it('Should use a custom validator and fail with custom error message', (done) => {
         const validator = validate({
           validator: 'isType',
           arguments: 'boolean',
           message: 'Custom error message',
-        })
+        });
 
-        schema.path('name').validate(validator)
+        schema.path('name').validate(validator);
 
-        should.exist(doc)
+        should.exist(doc);
 
-        doc.name = 'Joe'
+        doc.name = 'Joe';
 
         doc.save((err, person) => {
-          should.exist(err)
-          should.not.exist(person)
+          should.exist(err);
+          should.not.exist(person);
           err.should.be
             .instanceof(Error)
-            .and.have.property('name', 'ValidationError')
-          err.errors.name.should.have.property('path', 'name')
-          err.errors.name.message.should.equal('Custom error message')
-          return done()
-        })
-      })
+            .and.have.property('name', 'ValidationError');
+          err.errors.name.should.have.property('path', 'name');
+          err.errors.name.message.should.equal('Custom error message');
+          return done();
+        });
+      });
 
-      it('Should use a custom async validator and pass', done => {
+      it('Should use a custom async validator and pass', (done) => {
         const validator = validate({
           validator: 'asyncIsTypeValidator',
           arguments: 'string',
-        })
+        });
 
-        schema.path('name').validate(validator)
+        schema.path('name').validate(validator);
 
-        should.exist(doc)
+        should.exist(doc);
 
-        doc.name = 'Joe'
+        doc.name = 'Joe';
 
         doc.save((err, person) => {
-          should.not.exist(err)
-          should.exist(person)
-          return done()
-        })
-      })
+          should.not.exist(err);
+          should.exist(person);
+          return done();
+        });
+      });
 
-      it('Should use a custom async validator and fail', done => {
+      it('Should use a custom async validator and fail', (done) => {
         const validator = validate({
           validator: 'asyncIsTypeValidator',
           arguments: 'boolean',
-        })
+        });
 
-        schema.path('name').validate(validator)
+        schema.path('name').validate(validator);
 
-        should.exist(doc)
+        should.exist(doc);
 
-        doc.name = 'Joe'
+        doc.name = 'Joe';
 
         doc.save((err, person) => {
-          should.exist(err)
-          should.not.exist(person)
+          should.exist(err);
+          should.not.exist(person);
           err.should.be
             .instanceof(Error)
-            .and.have.property('name', 'ValidationError')
-          err.errors.name.should.have.property('path', 'name')
-          err.errors.name.message.should.equal('Not correct type')
-          return done()
-        })
-      })
-    })
+            .and.have.property('name', 'ValidationError');
+          err.errors.name.should.have.property('path', 'name');
+          err.errors.name.message.should.equal('Not correct type');
+          return done();
+        });
+      });
+    });
 
     describe('Passing functions directly -', () => {
-      it('Should pass custom validator when a function is passed directly', done => {
+      it('Should pass custom validator when a function is passed directly', (done) => {
         const validator = validate({
-          validator: function(val) {
-            return val > 18
+          validator: function (val) {
+            return val > 18;
           },
           message: 'Age must be greater than 18',
-        })
+        });
 
-        schema.path('age').validate(validator)
+        schema.path('age').validate(validator);
 
-        should.exist(doc)
+        should.exist(doc);
 
-        doc.age = 20
+        doc.age = 20;
 
         doc.save((err, person) => {
-          should.not.exist(err)
-          should.exist(person)
-          person.should.have.property('age').and.match(20)
-          return done()
-        })
-      })
+          should.not.exist(err);
+          should.exist(person);
+          person.should.have.property('age').and.match(20);
+          return done();
+        });
+      });
 
-      it('Should fail custom validator when a function is passed directly', done => {
+      it('Should fail custom validator when a function is passed directly', (done) => {
         const validator = validate({
-          validator: function(val) {
-            return val > 18
+          validator: function (val) {
+            return val > 18;
           },
           message: 'Age must be greater than 18',
-        })
+        });
 
-        schema.path('age').validate(validator)
+        schema.path('age').validate(validator);
 
-        should.exist(doc)
+        should.exist(doc);
 
-        doc.age = 10
+        doc.age = 10;
 
         doc.save((err, person) => {
-          should.exist(err)
-          should.not.exist(person)
+          should.exist(err);
+          should.not.exist(person);
           err.should.be
             .instanceof(Error)
-            .and.have.property('name', 'ValidationError')
-          err.errors.age.should.have.property('path', 'age')
-          err.errors.age.message.should.equal('Age must be greater than 18')
-          return done()
-        })
-      })
-    })
+            .and.have.property('name', 'ValidationError');
+          err.errors.age.should.have.property('path', 'age');
+          err.errors.age.message.should.equal('Age must be greater than 18');
+          return done();
+        });
+      });
+    });
 
     describe('Update validators -', () => {
-      it('Should pass validation on a mongoose update', done => {
+      it('Should pass validation on a mongoose update', (done) => {
         const validator = validate({
-          validator: function(val) {
-            return val > 18
+          validator: function (val) {
+            return val > 18;
           },
           message: 'Age must be greater than 18',
-        })
+        });
 
-        const opts = { runValidators: true }
+        const opts = { runValidators: true };
 
-        schema.path('age').validate(validator)
+        schema.path('age').validate(validator);
 
-        should.exist(doc)
+        should.exist(doc);
 
-        doc.age = 19
+        doc.age = 19;
 
         doc.save((err, person) => {
-          should.not.exist(err)
-          should.exist(person)
+          should.not.exist(err);
+          should.exist(person);
 
           Person.update({}, { age: 20 }, opts, (err, person) => {
-            should.not.exist(err)
-            done()
-          })
-        })
-      })
+            should.not.exist(err);
+            done();
+          });
+        });
+      });
 
-      it('Should fail validation on a mongoose update', done => {
+      it('Should fail validation on a mongoose update', (done) => {
         const validator = validate({
-          validator: function(val) {
-            return val > 18
+          validator: function (val) {
+            return val > 18;
           },
           message: 'Age must be greater than 18',
-        })
+        });
 
-        const opts = { runValidators: true }
+        const opts = { runValidators: true };
 
-        schema.path('age').validate(validator)
+        schema.path('age').validate(validator);
 
-        should.exist(doc)
+        should.exist(doc);
 
-        doc.age = 19
+        doc.age = 19;
 
         doc.save((err, person) => {
-          should.not.exist(err)
-          should.exist(person)
+          should.not.exist(err);
+          should.exist(person);
 
           Person.update({}, { age: 17 }, opts, (err, person) => {
-            should.exist(err)
-            err.errors.should.have.property('age')
+            should.exist(err);
+            err.errors.should.have.property('age');
             err.errors.age.should.have.property(
               'message',
               'Age must be greater than 18'
-            )
-            done()
-          })
-        })
-      })
+            );
+            done();
+          });
+        });
+      });
 
-      it('Should fail validation on a mongoose update', done => {
+      it('Should fail validation on a mongoose update', (done) => {
         const validator = validate({
-          validator: function(val) {
-            return val > 18
+          validator: function (val) {
+            return val > 18;
           },
           message: 'Age must be greater than 18',
-        })
+        });
 
-        const opts = { runValidators: true }
+        const opts = { runValidators: true };
 
-        schema.path('age').validate(validator)
+        schema.path('age').validate(validator);
 
-        should.exist(doc)
+        should.exist(doc);
 
-        doc.age = 19
+        doc.age = 19;
 
         doc.save((err, person) => {
-          should.not.exist(err)
-          should.exist(person)
+          should.not.exist(err);
+          should.exist(person);
 
           Person.update({}, { age: 17 }, opts, (err, person) => {
-            should.exist(err)
-            err.errors.should.have.property('age')
+            should.exist(err);
+            err.errors.should.have.property('age');
             err.errors.age.should.have.property(
               'message',
               'Age must be greater than 18'
-            )
-            done()
-          })
-        })
-      })
-    })
+            );
+            done();
+          });
+        });
+      });
+    });
 
     describe('Miscellaneous -', () => {
       // https://github.com/leepowellcouk/mongoose-validator/issues/7#issuecomment-20494299
-      it('Should pass on legacy isEmail method', done => {
+      it('Should pass on legacy isEmail method', (done) => {
         const validator = validate({
           validator: 'isEmail',
-        })
+        });
 
-        schema.path('name').validate(validator)
+        schema.path('name').validate(validator);
 
-        should.exist(doc)
+        should.exist(doc);
 
-        doc.name = 'username+suffix@googlemail.com'
+        doc.name = 'username+suffix@googlemail.com';
 
         doc.save((err, person) => {
-          should.not.exist(err)
-          should.exist(person)
-          return done()
-        })
-      })
+          should.not.exist(err);
+          should.exist(person);
+          return done();
+        });
+      });
 
-      it('Should pass custom validator using non-string value', done => {
+      it('Should pass custom validator using non-string value', (done) => {
         const validator = validate({
           validator: 'isArray',
-        })
+        });
 
-        schema.path('interests').validate(validator)
+        schema.path('interests').validate(validator);
 
-        should.exist(doc)
+        should.exist(doc);
 
-        doc.interests = ['cycling', 'fishing']
+        doc.interests = ['cycling', 'fishing'];
 
         doc.save((err, person) => {
-          should.not.exist(err)
-          should.exist(person)
+          should.not.exist(err);
+          should.exist(person);
           person.should.have
             .property('interests')
-            .and.match(['cycling', 'fishing'])
-          return done()
-        })
-      })
+            .and.match(['cycling', 'fishing']);
+          return done();
+        });
+      });
 
-      it('Issue #12', done => {
+      it('Issue #12', (done) => {
         const validator1 = validate({
           validator: 'notEmpty',
           message: 'Username should not be empty',
-        })
+        });
 
         const validator2 = validate({
           validator: 'isLength',
           arguments: [4, 40],
           message: 'Username should be between 4 and 40 characters',
-        })
+        });
 
         const validator3 = validate({
           validator: 'isAlphanumeric',
           message: 'Username must only contain letters and digits',
-        })
+        });
 
         schema
           .path('name')
           .validate(validator1)
           .validate(validator2)
-          .validate(validator3)
+          .validate(validator3);
 
-        should.exist(doc)
+        should.exist(doc);
 
-        doc.name = ''
+        doc.name = '';
 
         doc.save((err, person) => {
-          should.exist(err)
-          should.not.exist(person)
-          err.errors.name.message.should.equal('Username should not be empty')
-          return done()
-        })
-      })
+          should.exist(err);
+          should.not.exist(person);
+          err.errors.name.message.should.equal('Username should not be empty');
+          return done();
+        });
+      });
 
-      it('Custom validator calls with this = model instance', done => {
+      it('Custom validator calls with this = model instance', (done) => {
         const validator = validate({
           validator: 'isContextEqlModelInstance',
-        })
+        });
 
-        schema.path('name').validate(validator)
+        schema.path('name').validate(validator);
 
-        should.exist(doc)
+        should.exist(doc);
 
-        doc.name = 'Joe'
+        doc.name = 'Joe';
 
         doc.save((err, person) => {
-          should.not.exist(err)
-          should.exist(person)
-          return done()
-        })
-      })
-    })
-  })
-})()
+          should.not.exist(err);
+          should.exist(person);
+          return done();
+        });
+      });
+    });
+  });
+})();
