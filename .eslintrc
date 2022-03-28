@@ -1,0 +1,4 @@
+{
+  "extends": ["standard", "prettier", "prettier/standard"],
+  "plugins": ["standard", "prettier"]
+}
