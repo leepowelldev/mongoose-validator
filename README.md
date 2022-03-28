@@ -8,7 +8,7 @@ Mongoose Validator simply returns Mongoose style validation objects that utilise
 
 Version 1.0.x has been refactored to support a simpler interface and also validator.js 3.0.x
 
-**NOTE**: If you were using 0.2.x with your projects please be aware that upgrading to 1.0.x will break them. As of validator.js 3.0.x - many of the avilable validators have been changed. For example, 'regex' validator no longer exists and has been replaced with 'matches'.
+**NOTE**: If you were using 0.2.x with your projects please be aware that upgrading to 1.0.x will break them. As of validator.js 3.0.x - many of the available validators have been changed. For example, 'regex' validator no longer exists and has been replaced with 'matches'.
 
 ## Installation
 
