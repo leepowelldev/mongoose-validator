@@ -40,7 +40,7 @@
     "is": "^3.3.0"
   },
   "peerDependencies": {
-    "validator": ">=13"
+    "validator": ">=13.7.0"
   },
   "devDependencies": {
     "eslint": "^7.12.1",
